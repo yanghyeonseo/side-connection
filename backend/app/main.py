@@ -86,17 +86,24 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             window_seconds=settings.case_lookup_window_seconds,
         )
 
-        # 캐시가 있으면 즉시 반영하고, 수집 루프가 낡은 캐시를 주기적으로 갱신한다.
+        # 캐시가 있으면 즉시 반영한다. 이후 수집은 설정에 따라
+        # 주기 갱신 루프 또는 기동 시 1회(캐시가 낡았을 때만)로 동작한다.
         cached = opendata.load_cache(settings)
         if cached is not None:
             app.state.catalog = opendata.merge_catalog(base_catalog, cached[0])
         stop_refresh = Event()
         if settings.gov24_service_key or settings.welfare_info_service_key:
-            Thread(
-                target=_open_data_refresh_loop,
-                args=(app, settings, base_catalog, stop_refresh),
-                daemon=True,
-            ).start()
+            cache_stale = cached is None or not opendata.is_cache_fresh(cached[1], settings)
+            if settings.open_data_auto_refresh:
+                Thread(
+                    target=_open_data_refresh_loop,
+                    args=(app, settings, base_catalog, stop_refresh),
+                    daemon=True,
+                ).start()
+            elif cache_stale:
+                Thread(
+                    target=_refresh_open_data, args=(app, settings, base_catalog), daemon=True
+                ).start()
 
         yield
         stop_refresh.set()

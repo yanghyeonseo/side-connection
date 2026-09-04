@@ -84,7 +84,11 @@ class Settings(BaseSettings):
     open_data_refresh_hours: int = Field(
         default=24,
         ge=1,
-        description="캐시가 이보다 오래되면 백그라운드에서 다시 수집",
+        description="캐시가 이보다 오래되면 낡은 것으로 본다",
+    )
+    open_data_auto_refresh: bool = Field(
+        default=True,
+        description="true면 갱신 주기마다 백그라운드 수집, false면 기동 시 캐시가 낡았을 때만 1회 수집",
     )
 
     welfare_center_phone: str = Field(
