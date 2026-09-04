@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": {
+    "id": "energy-utility-support",
+    "name": "에너지·공공요금 관련 기관",
+    "scope": "냉난방 바우처, 가스·전기·수도 감면, 에너지효율 개선"
+  },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-energy-voucher-2026",
+      "name": "에너지바우처",
+      "summary": "저소득 취약계층의 냉난방 에너지 비용을 가구원 수에 따라 지원합니다.",
+      "managingOrganization": "한국에너지공단",
+      "managingDepartment": "에너지바우처 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "LIVING",
+      "relatedCategories": ["HOUSING"],
+      "serviceTypes": ["VOUCHER", "UTILITY_DISCOUNT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "HOUSEHOLD_HAS_ELDERLY_OR_OTHER_CHARACTERISTIC"],
+        "conditions": ["소득기준과 세대원 특성기준을 모두 충족", "노인 기준은 1961년 12월 31일 이전 출생", "가구원 모두가 보장시설에서 급여를 받으면 제외"]
+      },
+      "benefits": ["2026년 1인가구 295,200원", "2인가구 407,500원", "3인가구 532,700원", "4인 이상 701,300원"],
+      "requiredDocuments": ["에너지이용권 발급 신청서", "대리 신청 시 위임장과 대리인 신분증", "요금차감용 최근 에너지요금 고지서"],
+      "application": { "periodType": "DATE_RANGE", "deadline": "2026-12-31", "method": "행정복지센터 방문·대리·직권 신청 또는 복지로 온라인 신청", "organization": "읍면동 행정복지센터", "contact": "1600-3190" },
+      "source": { "name": "에너지바우처 지원대상 및 지원금액", "url": "https://www.energyv.or.kr/info/support_info.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "OLD_AGE", "HEATING_COOLING_NEED"]
+    },
+    {
+      "id": "national-city-gas-discount-2026",
+      "name": "사회적 배려대상자 도시가스요금 경감",
+      "summary": "기초생활수급자와 차상위계층 등에게 도시가스 요금을 월 한도 내에서 할인합니다.",
+      "managingOrganization": "한국가스공사·지역 도시가스회사",
+      "managingDepartment": "도시가스요금 경감 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "LIVING",
+      "relatedCategories": ["HOUSING"],
+      "serviceTypes": ["UTILITY_DISCOUNT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY"],
+        "conditions": ["도시가스를 주택용으로 사용하는 법정 경감 대상", "취사·난방 용도, 계절, 자격, 에너지바우처 수급 여부에 따라 할인액 차등"]
+      },
+      "benefits": ["도시가스 기본요금과 사용요금을 자격별 월 한도 내 경감"],
+      "requiredDocuments": ["도시가스요금 경감 신청서", "신분증", "자격 확인서류 또는 행정정보 이용 동의", "도시가스 고객번호"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "도시가스회사, 행정복지센터, 정부24 또는 복지로 신청", "organization": "지역 도시가스회사·읍면동 행정복지센터", "contact": "지역 도시가스회사 고객센터" },
+      "source": { "name": "한국가스공사 도시가스요금 경감제도", "url": "https://www.kogas.or.kr/site/koGas/1020408030000", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "HEATING_COOLING_NEED"]
+    },
+    {
+      "id": "national-electricity-welfare-discount-2026",
+      "name": "전기요금 복지할인",
+      "summary": "기초생활수급자·차상위계층·장애인·국가유공자 등 취약가구의 주택용 전기요금을 할인합니다.",
+      "managingOrganization": "한국전력공사",
+      "managingDepartment": "고객지원·요금 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "LIVING",
+      "relatedCategories": ["HOUSING"],
+      "serviceTypes": ["UTILITY_DISCOUNT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY"],
+        "conditions": ["주택용 전기를 사용하는 법정 복지할인 대상", "자격·계절·전기사용량에 따라 월 할인한도 차등", "이사와 고객번호 변경 시 재신청 확인"]
+      },
+      "benefits": ["월 전기요금을 자격별 한도 내 할인", "일부 대상은 여름철 할인한도 확대"]
+      ,"requiredDocuments": ["신분증", "전기요금 고객번호", "자격증명 또는 행정정보 공동이용 동의"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "한전 고객센터·사이버지점, 행정복지센터, 정부24 또는 복지로 신청", "organization": "한국전력공사·읍면동 행정복지센터", "contact": "123" },
+      "source": { "name": "한국전력공사 주택용 복지할인 요금제", "url": "https://home.kepco.co.kr/kepco/front/html/CY/H/C/CYHCHP00207.html", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "HEATING_COOLING_NEED"]
+    },
+    {
+      "id": "national-low-income-energy-efficiency-2026",
+      "name": "저소득층 에너지효율개선사업",
+      "summary": "취약가구의 단열·창호·고효율 보일러·냉방기 등을 개선해 에너지 비용을 줄입니다.",
+      "managingOrganization": "한국에너지재단",
+      "managingDepartment": "저소득층 에너지효율개선사업 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING", "SAFETY"],
+      "serviceTypes": ["HOME_REPAIR", "ENERGY_EFFICIENCY"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "LOCAL_LOW_INCOME"],
+        "conditions": ["기초생활수급·차상위·지자체 추천 복지사각지대 가구 등", "주거 유형과 이전 지원 이력 등에 따라 제외 가능", "냉방은 공고기간, 난방은 예산 소진 시까지"]
+      },
+      "benefits": ["단열·창호·바닥공사", "고효율 보일러 교체", "고효율 냉방기기 지원"],
+      "requiredDocuments": ["사업 신청서", "주택 소유주 동의서", "수급자·차상위 등 자격증명", "지자체 추천서류"],
+      "application": { "periodType": "BUDGET_LIMITED", "deadline": null, "method": "관할 행정복지센터 방문 신청", "organization": "읍면동 행정복지센터·한국에너지재단", "contact": "1670-7653" },
+      "source": { "name": "복지로 2026 취약계층 고효율 에너지 전환 안내", "url": "https://www.bokjiro.go.kr/ssis-tbu/cms/pc/news/news/1309412_1114.html", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "HOME_REPAIR_NEED", "HEATING_COOLING_NEED"]
+    },
+    {
+      "id": "national-high-efficiency-lighting-2026",
+      "name": "에너지취약계층 고효율조명기기 무상교체",
+      "summary": "저소득가구와 사회복지시설의 노후 조명을 고효율 LED 조명으로 무상 교체합니다.",
+      "managingOrganization": "한국에너지공단·지방자치단체",
+      "managingDepartment": "전력효율향상사업 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING", "SAFETY"],
+      "serviceTypes": ["HOME_REPAIR", "ENERGY_EFFICIENCY"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY"],
+        "conditions": ["지자체 사업 대상 가구로 선정", "건물·조명 상태와 임대인 동의 여부 확인", "지역별 예산과 모집 여부가 다름"]
+      },
+      "benefits": ["기존 저효율 조명을 고효율 LED 조명으로 무상 교체", "조명 전력비 절감과 실내 밝기 개선"],
+      "requiredDocuments": ["지자체 신청서", "수급자·차상위 자격증명", "임차가구는 소유주 동의서"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "주소지 시군구 또는 행정복지센터 공고 확인 후 신청", "organization": "지방자치단체", "contact": "관할 시군구 에너지 담당부서" },
+      "source": { "name": "한국에너지공단 전력효율향상사업", "url": "https://www.energy.or.kr/front/conts/105002004001000.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "HOME_REPAIR_NEED", "VISION_DIFFICULTY"]
+    },
+    {
+      "id": "local-water-fee-discount-2026",
+      "name": "저소득층 수도요금 감면",
+      "summary": "지방자치단체 조례에 따라 고령자·기초생활수급자·차상위계층 등의 수도요금을 감면합니다.",
+      "managingOrganization": "지방자치단체 상수도사업본부",
+      "managingDepartment": "수도요금 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국-지자체별상이"],
+      "category": "LIVING",
+      "relatedCategories": ["HOUSING"],
+      "serviceTypes": ["UTILITY_DISCOUNT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "LOCAL_ORDINANCE"],
+        "conditions": ["대상과 감면액은 시군구 조례에 따라 다름", "일부 지역은 65세 이상 고령자 또는 특정 가구조건을 별도로 지원", "거주지 상수도사업본부 확인 필수"]
+      },
+      "benefits": ["월 수도 사용량 또는 요금의 일부를 지자체 조례에 따라 감면"],
+      "requiredDocuments": ["수도요금 감면 신청서", "신분증", "수도 고객번호", "자격증명서류"],
+      "application": { "periodType": "LOCAL_RULE", "deadline": null, "method": "행정복지센터 또는 관할 상수도사업본부 신청", "organization": "지방자치단체·상수도사업본부", "contact": "121 또는 관할 상수도 고객센터" },
+      "source": { "name": "복지로 저소득층 수도요금감면", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00006224&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "UTILITY_BILL_BURDEN", "OLD_AGE"]
+    }
+  ]
+}

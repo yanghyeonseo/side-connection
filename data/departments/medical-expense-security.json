@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "medical-expense-security", "name": "보건복지부 의료급여·중증질환", "scope": "의료급여, 본인부담 보호, 암·희귀질환 의료비" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-medical-aid-2026", "name": "의료급여", "summary": "저소득 수급권자의 진찰·검사·치료·입원 등 의료비를 지원합니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "기초의료보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["LIVING"], "serviceTypes": ["MEDICAL_AID", "MEDICAL_COST_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["MEDICAL_AID_RECIPIENT", "BASIC_LIVELIHOOD_MEDICAL"], "conditions": ["국민기초생활보장법·의료급여법 또는 타법상 수급권자", "1종과 2종의 선정기준과 본인부담이 다름"] },
+      "benefits": ["진찰·검사·약제·치료·입원 등 급여비용 지원", "수급종별 본인부담 차등"], "requiredDocuments": ["사회보장급여 신청서", "소득·재산 신고서", "금융정보 제공동의서 등 조사서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "주소지 행정복지센터 또는 시군구 신청", "organization": "읍면동 행정복지센터", "contact": "129" },
+      "source": { "name": "복지로 의료급여", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000102", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LOW_INCOME", "CHRONIC_DISEASE", "MEDICAL_EXPENSE_BURDEN"]
+    },
+    {
+      "id": "national-medical-aid-copayment-ceiling-2026", "name": "의료급여 본인부담 상한금", "summary": "의료급여 수급자의 급여대상 본인부담이 상한을 넘으면 초과액을 돌려줍니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "기초의료보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["LIVING"], "serviceTypes": ["REFUND", "MEDICAL_COST_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["MEDICAL_AID_RECIPIENT"], "conditions": ["의료급여 수급권자", "급여대상 본인부담금이 수급종별 상한을 초과", "비급여와 일부 제외항목은 산정하지 않음"] },
+      "benefits": ["수급종별 본인부담 상한 초과금 전액 지급"], "requiredDocuments": ["본인부담금 지급신청서", "통장 사본", "담당기관 요청서류"],
+      "application": { "periodType": "YEARLY", "deadline": null, "method": "시군구 의료급여 담당부서에 지급 여부 확인·신청", "organization": "시군구청", "contact": "129" },
+      "source": { "name": "복지로 의료급여 본인부담 상한금", "url": "https://www.bokjiro.go.kr/ssis-tbu/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00003202", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["MEDICAL_AID_RECIPIENT", "HIGH_MEDICAL_EXPENSE", "MEDICAL_EXPENSE_BURDEN"]
+    },
+    {
+      "id": "national-medical-aid-copayment-compensation-2026", "name": "의료급여 본인부담 보상금", "summary": "의료급여 급여대상 본인부담이 일정 금액을 넘으면 초과분 일부를 보상합니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "기초의료보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["LIVING"], "serviceTypes": ["REFUND", "MEDICAL_COST_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["MEDICAL_AID_RECIPIENT"], "conditions": ["의료급여 수급권자", "수급종별 월 본인부담 보상기준 초과", "비급여와 타 사업 중복지원액 제외"] },
+      "benefits": ["기준 초과 급여 본인부담금의 일부 보상"], "requiredDocuments": ["본인부담금 보상 신청서", "통장 사본"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "시군구 의료급여 담당부서 문의", "organization": "시군구청", "contact": "129" },
+      "source": { "name": "복지로 의료급여 본인부담 보상금", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00003273&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["MEDICAL_AID_RECIPIENT", "HIGH_MEDICAL_EXPENSE", "LOW_INCOME"]
+    },
+    {
+      "id": "national-medical-aid-care-expense-2026", "name": "의료급여 요양비", "summary": "부득이하게 의료급여기관 밖에서 치료받거나 가정용 의료기기를 사용하는 수급권자에게 요양비를 지급합니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "기초의료보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["LIVING"], "serviceTypes": ["MEDICAL_COST_SUPPORT", "HOME_MEDICAL_EQUIPMENT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["MEDICAL_AID_RECIPIENT"], "conditions": ["의료급여 수급권자", "질병·부상 요양비 또는 산소치료·당뇨 소모성재료 등 급여 항목별 처방·기준 충족"] },
+      "benefits": ["인정되는 요양비 또는 가정용 의료기기·소모품 비용 지급"], "requiredDocuments": ["요양비 지급청구서", "처방전·세금계산서 등 항목별 증빙", "통장 사본"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "시군구 의료급여 담당부서에 청구", "organization": "시군구청", "contact": "129" },
+      "source": { "name": "복지로 의료급여 요양비", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000056", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["MEDICAL_AID_RECIPIENT", "HOME_MEDICAL_EQUIPMENT_NEED", "CHRONIC_DISEASE"]
+    },
+    {
+      "id": "national-adult-cancer-medical-cost-2026", "name": "성인 암환자 의료비 지원", "summary": "의료급여·차상위 등 저소득 성인 암환자의 치료비 부담을 줄입니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "질병정책과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["LIVING"], "serviceTypes": ["MEDICAL_COST_SUPPORT", "CASH"],
+      "eligibility": { "minAge": 18, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["MEDICAL_AID_RECIPIENT", "NEAR_POVERTY_COPAYMENT_REDUCTION"], "conditions": ["의료급여수급권자 또는 건강보험 차상위 본인부담경감 대상 성인 암환자", "과거 국가암검진 연계 건강보험 대상은 진단시점 등 별도 기준 적용", "지원연수·암종·중복지원 심사"] },
+      "benefits": ["급여·비급여 본인부담 의료비를 사업 한도 내 지원"], "requiredDocuments": ["진단서", "진료비 영수증·세부내역", "수급자격·통장 확인서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "주소지 관할 보건소 신청", "organization": "시군구 보건소", "contact": "129" },
+      "source": { "name": "복지로 암환자의료비지원", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00001184&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["CANCER_DIAGNOSIS", "LOW_INCOME", "HIGH_MEDICAL_EXPENSE"]
+    },
+    {
+      "id": "national-medical-aid-assistive-device-2026", "name": "의료급여 장애인보조기기 지원", "summary": "의료급여 수급 등록장애인의 휠체어·보청기 등 보조기기 구입비를 지원합니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "기초의료보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["MOBILITY", "SAFETY"], "serviceTypes": ["ASSISTIVE_EQUIPMENT", "MEDICAL_COST_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["MEDICAL_AID_RECIPIENT"], "conditions": ["의료급여 수급권자이면서 등록장애인", "품목별 처방·검수와 내구연한 기준", "구입 전에 지급 적격 통보 필요"] },
+      "benefits": ["급여대상 보조기기 기준액 범위 구입비 지원"], "requiredDocuments": ["보조기기 처방전", "급여 신청서", "검수확인서·세금계산서 등 품목별 서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "시군구에 사전 신청 후 적격 통보를 받고 구입", "organization": "시군구청", "contact": "129" },
+      "source": { "name": "복지로 의료급여 장애인보조기기 지원", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000067", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["REGISTERED_DISABLED", "MOBILITY_DIFFICULTY", "HEARING_DIFFICULTY", "MEDICAL_AID_RECIPIENT"]
+    }
+  ]
+}

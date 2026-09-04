@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "national-preventive-health", "name": "건강보험공단·질병관리청 예방건강", "scope": "건강검진, 암검진, 예방접종, 치과, 보험료 경감" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-general-health-screening-2026", "name": "국가 일반건강검진", "summary": "고혈압·당뇨 등 만성질환을 조기에 발견하고 연령별 인지·신체기능 검사를 받을 수 있습니다.",
+      "managingOrganization": "국민건강보험공단", "managingDepartment": "건강관리실", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["SAFETY"], "serviceTypes": ["HEALTH_SCREENING", "COGNITIVE_SCREENING"],
+      "eligibility": { "minAge": 20, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["건강보험 가입자·피부양자 또는 의료급여수급권자 중 해당 연도 검진대상", "가입자 유형에 따라 1년 또는 2년 주기", "인지기능·노인신체기능 검사는 해당 연령 기준 적용"] },
+      "benefits": ["문진·진찰과 혈압·혈액·소변·흉부검사", "성·연령별 골밀도·인지기능·노인신체기능 검사"], "requiredDocuments": ["신분증", "건강검진표 또는 검진대상 확인"],
+      "application": { "periodType": "YEARLY", "deadline": "2026-12-31", "method": "검진대상 조회 후 지정 건강검진기관 예약·방문", "organization": "국가건강검진 지정기관", "contact": "1577-1000" },
+      "source": { "name": "국민건강보험 국가건강검진 안내", "url": "https://www.nhis.or.kr/static/html/wbma/c/checkup_2022.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "CHRONIC_DISEASE", "COGNITIVE_RISK", "PREVENTIVE_HEALTH"]
+    },
+    {
+      "id": "national-cancer-screening-2026", "name": "국가암검진", "summary": "연령과 위험요인에 따라 위암·대장암·간암·폐암 등 국가암검진을 지원합니다.",
+      "managingOrganization": "국민건강보험공단", "managingDepartment": "건강관리실", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": [], "serviceTypes": ["CANCER_SCREENING", "HEALTH_SCREENING"],
+      "eligibility": { "minAge": 40, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["암종별 연령·성별·검진주기가 다름", "대장암은 50세 이상, 폐암은 54~74세 고위험군 등 별도 기준", "해당 연도 검진대상 여부 확인 필요"] },
+      "benefits": ["대상 암종별 선별검사", "일부 대상자는 본인부담 없이 검진"], "requiredDocuments": ["신분증", "암검진표 또는 검진대상 확인"],
+      "application": { "periodType": "YEARLY", "deadline": "2026-12-31", "method": "검진대상 조회 후 지정 암검진기관 예약·방문", "organization": "국가암검진 지정기관", "contact": "1577-1000" },
+      "source": { "name": "국민건강보험 국가검진 안내", "url": "https://www.nhis.or.kr/static/alim/paper/oldpaper/202211/sub/11.html", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "CANCER_RISK", "PREVENTIVE_HEALTH"]
+    },
+    {
+      "id": "national-senior-influenza-vaccination-2026", "name": "어르신 인플루엔자 국가예방접종", "summary": "65세 이상 어르신이 전국 보건소와 위탁의료기관에서 독감 예방접종을 무료로 받습니다.",
+      "managingOrganization": "질병관리청", "managingDepartment": "예방접종관리과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["SAFETY"], "serviceTypes": ["VACCINATION"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["2026-2027절기는 1961년 12월 31일 이전 출생자", "연령대별 접종 시작일이 다름", "의료기관 방문 전 백신 보유 여부 확인"] },
+      "benefits": ["절기 인플루엔자 백신 1회 무료 접종"], "requiredDocuments": ["신분증"],
+      "application": { "periodType": "FIXED_PERIOD", "deadline": "2027-04-30", "method": "보건소 또는 위탁의료기관 방문", "organization": "보건소·예방접종 위탁의료기관", "contact": "1339" },
+      "source": { "name": "질병관리청 2026-2027절기 어르신 인플루엔자", "url": "https://nip.kdca.go.kr/irhp/infm/goVcntInfo.do?menuCd=134&menuLv=1", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "INFECTION_RISK", "PREVENTIVE_HEALTH"]
+    },
+    {
+      "id": "national-senior-pneumococcal-vaccination-2026", "name": "어르신 폐렴구균 국가예방접종", "summary": "65세 이상 어르신에게 폐렴구균 예방접종 비용을 지원합니다.",
+      "managingOrganization": "질병관리청", "managingDepartment": "예방접종관리과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["SAFETY"], "serviceTypes": ["VACCINATION"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["65세 이상 중 사업 대상 백신 미접종자", "과거 접종력과 건강상태를 의료기관에서 확인"] },
+      "benefits": ["사업 대상 폐렴구균 백신 무료 접종"], "requiredDocuments": ["신분증", "해당 시 예방접종 기록"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "보건소 또는 지정 위탁의료기관 문의 후 방문", "organization": "보건소·예방접종 위탁의료기관", "contact": "1339" },
+      "source": { "name": "질병관리청 어르신 폐렴구균 예방접종사업", "url": "https://nip.kdca.go.kr/irhp/com/goEtcUsGdns.do?menuCd=53&menuLv=5", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "RESPIRATORY_RISK", "PREVENTIVE_HEALTH"]
+    },
+    {
+      "id": "national-senior-dental-implant-2026", "name": "노인 치과임플란트 건강보험 급여", "summary": "65세 이상 부분 무치악 환자의 치과 임플란트 비용 일부를 건강보험으로 지원합니다.",
+      "managingOrganization": "국민건강보험공단", "managingDepartment": "보험급여실", "status": "ACTIVE", "coverage": ["전국"], "category": "MEDICAL", "relatedCategories": ["MEAL"], "serviceTypes": ["DENTAL_CARE", "MEDICAL_COST_SUPPORT"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["건강보험 가입자·피부양자인 부분 무치악 환자", "평생 급여 인정 개수와 재료·시술 기준 적용", "완전 무치악 등 비급여 사유 확인 필요"] },
+      "benefits": ["급여 기준에 해당하는 임플란트 시술비 일부 지원", "건강보험·차상위·의료급여 자격별 본인부담 차등"], "requiredDocuments": ["신분증", "치과임플란트 대상자 등록신청서"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치과 진료 후 대상자 등록", "organization": "치과의료기관·국민건강보험공단", "contact": "1577-1000" },
+      "source": { "name": "국민건강보험 치과임플란트 급여안내", "url": "https://www.nhis.or.kr/static/html/wbma/c/wbmac0221.html", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "DENTAL_DIFFICULTY", "MEAL_DIFFICULTY", "MEDICAL_EXPENSE_BURDEN"]
+    },
+    {
+      "id": "national-elderly-health-premium-discount-2026", "name": "지역 건강보험료 노인세대 경감", "summary": "소득·재산 기준을 충족하는 65세 이상 노인이 있는 지역가입 세대의 보험료를 경감합니다.",
+      "managingOrganization": "국민건강보험공단", "managingDepartment": "자격부과실", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": ["MEDICAL"], "serviceTypes": ["FEE_DISCOUNT"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["NHIS_ELDERLY_HOUSEHOLD_LIMIT"], "conditions": ["지역가입자 세대", "65세 이상 노인세대와 70세 이상 노인만 있는 세대의 기준이 다름", "소득금액과 과표재산 기준 동시 충족"] },
+      "benefits": ["기준에 따라 지역 건강보험료 10~30% 경감", "공단 자료 확인 시 일부 자동 적용"], "requiredDocuments": ["대부분 공단 자료로 확인", "공단이 요청하는 소득·재산 증빙"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "자동 적용 여부를 확인하고 미적용 시 공단 문의", "organization": "국민건강보험공단", "contact": "1577-1000" },
+      "source": { "name": "국민건강보험 지역 보험료 경감", "url": "https://www.nhis.or.kr/static/html/wbma/b/wbmab0301.html", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "LOW_INCOME", "MEDICAL_EXPENSE_BURDEN", "UTILITY_BURDEN"]
+    }
+  ]
+}

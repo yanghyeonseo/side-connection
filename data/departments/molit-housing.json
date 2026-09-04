@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": {
+    "id": "molit-housing",
+    "name": "국토교통부·LH 주거복지",
+    "scope": "주거급여, 공공임대, 주거상향"
+  },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-housing-benefit-2026",
+      "name": "주거급여",
+      "summary": "기준 중위소득 48% 이하 가구에 임차료 또는 자가주택 수선비를 지원합니다.",
+      "managingOrganization": "국토교통부",
+      "managingDepartment": "주거복지지원과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["RENT_SUPPORT", "HOME_REPAIR"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["MEDIAN_INCOME_48_OR_LESS"],
+        "conditions": ["2026년 1인가구 소득인정액 월 1,230,834원 이하", "부양의무자와 관계없이 신청가구의 소득·재산 심사", "임차가구와 자가가구의 지원방식이 다름"]
+      },
+      "benefits": ["임차가구의 실제 임차료를 지역·가구원 수별 기준임대료 상한 내 지원", "자가가구의 주택 노후도에 따른 수선유지급여"],
+      "requiredDocuments": ["사회보장급여 신청서", "소득·재산 신고서", "금융정보 제공 동의서", "임대차계약서", "통장 사본", "신분증"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "주소지 행정복지센터 방문 또는 복지로 온라인 신청", "organization": "읍면동 행정복지센터", "contact": "1600-1004" },
+      "source": { "name": "마이홈 주거급여 안내", "url": "https://www.myhome.go.kr/hws/portal/cont/selectHousingBenefitView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "HOUSING_INSTABILITY", "RENT_BURDEN", "HOME_REPAIR_NEED"]
+    },
+    {
+      "id": "national-purchased-rental-housing-2026",
+      "name": "기존주택 등 매입임대주택",
+      "summary": "공공주택사업자가 기존주택을 매입·보수해 저소득층에게 저렴하게 임대합니다.",
+      "managingOrganization": "국토교통부·한국토지주택공사",
+      "managingDepartment": "주거복지지원과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["PUBLIC_HOUSING"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_LIVING_OR_MEDICAL", "NEAR_POVERTY", "PUBLIC_HOUSING_INCOME_LIMIT"],
+        "conditions": ["무주택세대구성원", "생계·의료급여 수급자 등 유형별 순위 적용", "소득·자산 기준과 모집지역은 공고별 확인"]
+      },
+      "benefits": ["다가구·다세대·연립·아파트 등을 시세보다 저렴하게 임대", "고령자 매입임대 등 모집유형별 거주기간과 임대조건 적용"],
+      "requiredDocuments": ["공급신청서", "신분증", "주민등록등본", "수급자 등 자격증명", "자산보유 사실확인서 등 공고상 서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "입주자 모집공고에 따라 행정복지센터 또는 LH 청약플러스 신청", "organization": "지자체·LH·지방도시공사", "contact": "1600-1004" },
+      "source": { "name": "복지로 기존주택 등 매입임대주택", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000062", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "HOUSING_INSTABILITY", "RENT_BURDEN", "OLD_AGE"]
+    },
+    {
+      "id": "national-charter-rental-housing-2026",
+      "name": "기존주택 전세임대주택",
+      "summary": "입주자가 찾은 주택을 LH 등이 임차한 뒤 저렴하게 다시 임대해 주거 안정을 돕습니다.",
+      "managingOrganization": "국토교통부·한국토지주택공사",
+      "managingDepartment": "주거복지지원과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["PUBLIC_HOUSING", "RENT_SUPPORT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "PUBLIC_HOUSING_INCOME_LIMIT"],
+        "conditions": ["무주택세대구성원", "수급자·저소득층 등 공급유형별 순위와 자산기준 충족", "계약 가능한 주택을 입주자가 물색해야 하는 유형"]
+      },
+      "benefits": ["LH 등이 기존주택을 전세계약한 뒤 대상자에게 저렴하게 재임대", "유형에 따라 최장 20년까지 재계약 가능"],
+      "requiredDocuments": ["입주신청서", "신분증", "주민등록등본", "수급자·차상위 증명", "공고에서 정한 소득·자산 서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "모집공고에 따라 주소지 행정복지센터 또는 LH 청약플러스 신청", "organization": "지자체·LH·지방도시공사", "contact": "1670-0002" },
+      "source": { "name": "마이홈 기존주택 전세임대", "url": "https://www.myhome.go.kr/hws/portal/cont/selectCharterRentalHouseView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "HOUSING_INSTABILITY", "RENT_BURDEN", "OLD_AGE"]
+    },
+    {
+      "id": "national-permanent-rental-housing-2026",
+      "name": "영구임대주택",
+      "summary": "생계·의료급여 수급자 등 사회보호계층에게 장기간 저렴한 공공임대주택을 공급합니다.",
+      "managingOrganization": "국토교통부·한국토지주택공사",
+      "managingDepartment": "공공주택정책 관련 부서",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["PUBLIC_HOUSING"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_LIVING_OR_MEDICAL", "PUBLIC_HOUSING_INCOME_LIMIT"],
+        "conditions": ["입주자 모집공고일 현재 무주택세대구성원", "공급자격별 소득·자산 기준 충족", "지역별 예비입주자 모집공고가 있을 때 신청"]
+      },
+      "benefits": ["전용 40㎡ 이하 주택", "2년 단위 계약으로 최대 50년 임대", "보증금과 임대료가 시중시세 약 30% 수준"]
+      ,"requiredDocuments": ["영구임대주택 공급신청서", "신분증", "주민등록등본", "자격증명과 소득·자산 서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "해당 단지가 있는 지역의 행정복지센터에 입주 신청", "organization": "지방자치단체·LH·지방도시공사", "contact": "1600-1004" },
+      "source": { "name": "마이홈 영구임대주택", "url": "https://m.myhome.go.kr/hws/portal/cont/selectPermanentRHView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "HOUSING_INSTABILITY", "RENT_BURDEN", "OLD_AGE"]
+    },
+    {
+      "id": "national-integrated-public-rental-2026",
+      "name": "통합공공임대주택",
+      "summary": "저소득층과 사회취약계층 등의 주거 안정을 위해 소득에 따라 임대료가 달라지는 공공주택을 공급합니다.",
+      "managingOrganization": "국토교통부·한국토지주택공사",
+      "managingDepartment": "공공주택정책 관련 부서",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["PUBLIC_HOUSING"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["MEDIAN_INCOME_100_OR_LESS", "MEDIAN_INCOME_150_OR_LESS"],
+        "conditions": ["입주자 모집공고일 현재 무주택세대구성원", "2026년 우선공급은 중위소득 100% 이하, 일반공급은 150% 이하를 기본으로 유형별 기준 적용", "자산과 자동차 기준 별도"]
+      },
+      "benefits": ["전용 85㎡ 이하 공공임대주택", "2년 단위 계약으로 최대 30년 임대", "소득구간에 따라 시세의 약 35~90% 수준 임대료"]
+      ,"requiredDocuments": ["입주자 모집공고상의 신청서", "주민등록·가족관계 서류", "소득·자산 관련 서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "LH 청약플러스 또는 공급기관 모집공고에 따라 신청", "organization": "LH·지방도시공사", "contact": "1600-1004" },
+      "source": { "name": "마이홈 통합공공임대주택", "url": "https://www.myhome.go.kr/hws/portal/cont/selectIntegratedPubRentalHouseView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["LOW_INCOME", "HOUSING_INSTABILITY", "RENT_BURDEN", "OLD_AGE"]
+    },
+    {
+      "id": "national-housing-vulnerable-support-2026",
+      "name": "주거취약계층 주거지원",
+      "summary": "쪽방·고시원·비닐하우스 등 열악한 곳에 사는 사람에게 저렴한 임대주택 입주를 지원합니다.",
+      "managingOrganization": "국토교통부·한국토지주택공사",
+      "managingDepartment": "주거복지지원과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "HOUSING",
+      "relatedCategories": ["SAFETY", "LIVING"],
+      "serviceTypes": ["PUBLIC_HOUSING", "MOVING_SUPPORT"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["PUBLIC_HOUSING_INCOME_LIMIT"],
+        "conditions": ["쪽방·고시원·여인숙·비닐하우스·노숙인시설 등 비정상거처에서 일정 기간 거주", "무주택과 소득·자산 등 세부 기준 적용", "주거상향 유형 확인 필요"]
+      },
+      "benefits": ["매입임대·전세임대·국민임대주택 우선 입주 지원", "대상에 따라 이사비 또는 보증금 대출 연계 가능"],
+      "requiredDocuments": ["주거지원 신청서", "비정상거처 거주 확인서", "주민등록등본", "소득·자산 확인서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "주민센터 또는 운영기관에 상담·신청", "organization": "읍면동 행정복지센터·LH", "contact": "1600-1004" },
+      "source": { "name": "마이홈 주거취약계층 주거지원", "url": "https://www.myhome.go.kr/hws/portal/cont/selectHousingSupVulnerableGroupsView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["HOUSING_INSTABILITY", "LOW_INCOME", "HOME_SAFETY_NEED", "OLD_AGE"]
+    }
+  ]
+}

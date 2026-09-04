@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "additional-living-support", "name": "생활비·이용료 추가지원", "scope": "식품, 방송, 교육·문화, 요양비 감경, 법률지원" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-government-rice-discount-2026", "name": "정부양곡 할인", "summary": "기초생활수급자와 차상위계층이 정부양곡을 할인된 가격으로 구입하도록 지원합니다.",
+      "managingOrganization": "농림축산식품부", "managingDepartment": "식량정책과", "status": "ACTIVE", "coverage": ["전국"], "category": "MEAL", "relatedCategories": ["LIVING"], "serviceTypes": ["FOOD_DISCOUNT", "DELIVERY"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY"], "conditions": ["정부양곡 직접 이용을 희망하는 수급가구 또는 법정 차상위가구", "가구원 1인당 월 구입 상한 적용"] },
+      "benefits": ["정부양곡 할인 구입", "신청한 주소로 택배 배송"], "requiredDocuments": ["신분증", "수급·차상위 자격은 행정정보 확인"],
+      "application": { "periodType": "MONTHLY", "deadline": null, "method": "주소지 행정복지센터에 구입 신청", "organization": "읍면동 행정복지센터", "contact": "주소지 행정복지센터" },
+      "source": { "name": "복지로 양곡할인", "url": "https://www.bokjiro.go.kr/ssis-tbu/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000074", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LOW_INCOME", "FOOD_INSECURITY", "MEAL_PREP_DIFFICULTY"]
+    },
+    {
+      "id": "national-tv-license-fee-exemption-2026", "name": "TV수신료 면제", "summary": "생계·의료급여 수급자, 시청각장애인 등 대상자의 TV수신료를 면제합니다.",
+      "managingOrganization": "방송통신위원회·KBS", "managingDepartment": "방송정책기획과", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": [], "serviceTypes": ["FEE_DISCOUNT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_LIVELIHOOD_LIVING_OR_MEDICAL", "REGISTERED_VISUAL_OR_HEARING_DISABLED", "ELIGIBLE_VETERAN"], "conditions": ["생계·의료급여 수급자 소유 수상기 등 법정 면제대상", "주거·교육급여만 수급하는 경우는 면제대상 아님", "전기요금과 별도 고지 환경은 납부처 확인"] },
+      "benefits": ["대상 TV수신료 월 요금 면제"], "requiredDocuments": ["신분증", "수급자·장애인·유공자 자격 확인서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "KBS 수신료 콜센터·행정복지센터 등에 신청", "organization": "KBS·읍면동 행정복지센터", "contact": "1588-1801" },
+      "source": { "name": "복지로 TV수신료 면제", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00004637&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LOW_INCOME", "UTILITY_BURDEN", "HEARING_DIFFICULTY", "VISUAL_DIFFICULTY"]
+    },
+    {
+      "id": "national-forest-welfare-voucher-2026", "name": "산림복지서비스이용권", "summary": "기초생활수급자·차상위계층 등에게 자연휴양림과 치유원에서 쓸 수 있는 이용권을 제공합니다.",
+      "managingOrganization": "산림청·한국산림복지진흥원", "managingDepartment": "산림복지교육과", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": ["CARE", "MEDICAL"], "serviceTypes": ["E_VOUCHER", "RECREATION", "HEALING_PROGRAM"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW"], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "DISABILITY_BENEFIT_RECIPIENT"], "conditions": ["산림복지소외자 자격 충족", "연도별 신청기간과 예산 범위 내 선정", "동일 세대 중복신청 규칙 확인"] },
+      "benefits": ["산림복지시설 숙박·프로그램 등에 사용할 카드형 이용권"], "requiredDocuments": ["온라인 본인인증", "대리·우편 신청 시 위임·자격서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "산림복지서비스이용권 누리집 또는 우편 신청", "organization": "한국산림복지진흥원", "contact": "1544-3228" },
+      "source": { "name": "복지로 산림복지서비스이용권", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00000946", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LOW_INCOME", "SOCIAL_ISOLATION", "RECREATION_NEED", "MENTAL_HEALTH_NEED"]
+    },
+    {
+      "id": "national-adult-lifelong-learning-voucher-2026", "name": "평생교육이용권", "summary": "저소득 성인이 등록 평생교육기관의 수강료와 교재비에 사용할 이용권을 신청할 수 있습니다.",
+      "managingOrganization": "교육부·광역자치단체", "managingDepartment": "평생직업교육정책과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "LIVING", "relatedCategories": ["CARE"], "serviceTypes": ["E_VOUCHER", "EDUCATION"],
+      "eligibility": { "minAge": 19, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "LOCAL_LOW_INCOME"], "conditions": ["광역지자체별 일반·디지털·노인 등 이용권 유형과 대상이 다름", "연도별 공고기간 내 신청", "선정 인원 초과 시 우선순위·추첨 적용"] },
+      "benefits": ["등록 교육기관 수강료와 해당 강좌 교재비 지원"], "requiredDocuments": ["신청서", "본인인증", "지자체가 요구하는 자격·소득 증빙"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "평생교육이용권 누리집에서 거주지역 공고 확인·신청", "organization": "광역자치단체·국가평생교육진흥원", "contact": "1600-3005" },
+      "source": { "name": "평생교육이용권 누리집", "url": "https://www.lllcard.kr/", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "LOW_INCOME", "SOCIAL_ISOLATION", "LIFELONG_LEARNING_NEED"]
+    },
+    {
+      "id": "national-long-term-care-copayment-reduction-2026", "name": "장기요양 본인부담금 감경", "summary": "장기요양 수급자 중 저소득·의료급여 대상자의 재가·시설급여 본인부담을 낮춥니다.",
+      "managingOrganization": "보건복지부·국민건강보험공단", "managingDepartment": "요양보험제도과", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": ["CARE", "MEDICAL"], "serviceTypes": ["COPAYMENT_REDUCTION"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["MEDICAL_AID_RECIPIENT", "NHIS_PREMIUM_LOWER_50_PERCENT"], "conditions": ["장기요양급여 수급자", "건강보험료 순위·재산 또는 기타 의료급여 등 감경기준 충족", "대부분 공단이 정기 확인하나 변동 시 신청 필요"] },
+      "benefits": ["장기요양 급여 본인부담금 기준에 따라 40% 또는 60% 감경"], "requiredDocuments": ["대부분 공단 자료로 확인", "자격 변동 시 감경신청서와 증빙"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "자동 적용 여부를 확인하고 누락·변동 시 공단 신청", "organization": "국민건강보험공단", "contact": "1577-1000" },
+      "source": { "name": "복지로 장기요양 본인부담금 감경", "url": "https://www.bokjiro.go.kr/ssis-tbu/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00001177", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LONG_TERM_CARE_RECIPIENT", "LOW_INCOME", "CARE_EXPENSE_BURDEN"]
+    },
+    {
+      "id": "national-legal-aid-2026", "name": "취약계층 법률구조", "summary": "경제적으로 어렵거나 법률 지식이 부족한 사람에게 상담, 소송대리와 형사변호 등을 지원합니다.",
+      "managingOrganization": "법무부·대한법률구조공단", "managingDepartment": "인권구조과", "status": "ACTIVE", "coverage": ["전국"], "category": "SAFETY", "relatedCategories": ["LIVING", "HOUSING"], "serviceTypes": ["LEGAL_COUNSELING", "LITIGATION_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "LOW_INCOME_PRIORITY", "ANY"], "conditions": ["사건 유형과 소득·대상자격에 따라 무료 또는 유료 구조", "승소가능성·구조 타당성 심사 가능"] },
+      "benefits": ["법률상담", "요건 충족 시 소송서류 작성·소송대리·형사변호", "35개 기관 서비스를 헬프법24에서 통합 탐색"], "requiredDocuments": ["신분증", "사건 관련 자료", "무료 구조 대상은 수급·소득 자격서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "대한법률구조공단 방문·전화·온라인 또는 헬프법24 이용", "organization": "대한법률구조공단", "contact": "132" },
+      "source": { "name": "복지로 법률구조", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00006309", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LEGAL_SUPPORT_NEED", "LOW_INCOME", "ABUSE_RISK", "HOUSING_DISPUTE"]
+    }
+  ]
+}

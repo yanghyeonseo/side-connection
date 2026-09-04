@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "additional-housing-support", "name": "고령자·위기가구 추가 주거지원", "scope": "주택연금, 고령자주택, 긴급주거, 이사·개선 지원" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-housing-pension-2026", "name": "주택연금", "summary": "55세 이상 주택소유자가 집에 계속 살면서 주택을 담보로 매월 노후생활자금을 받습니다.",
+      "managingOrganization": "한국주택금융공사", "managingDepartment": "주택연금처", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": ["HOUSING"], "serviceTypes": ["PENSION", "HOUSING_FINANCE"],
+      "eligibility": { "minAge": 55, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["부부 중 1명이 55세 이상", "부부 중 1명이 대한민국 국민", "공시가격 등 주택보유 요건 충족", "담보방식·주택종류별 가입요건 확인"] },
+      "benefits": ["담보주택에 거주하며 월지급금 수령", "국가의 연금지급 보증", "방식에 따라 목돈 인출 가능"], "requiredDocuments": ["주민등록등본·가족관계증명서", "전입세대확인서", "인감·등기 관련 서류 등 상담 후 안내"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "한국주택금융공사 지사 또는 온라인 상담·신청", "organization": "한국주택금융공사", "contact": "1688-8114" },
+      "source": { "name": "한국주택금융공사 주택연금", "url": "https://www.hf.go.kr/ko/sub03/sub03_01_01_01.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "HOME_OWNER", "RETIREMENT_INCOME_NEED", "HOUSING_STABILITY"]
+    },
+    {
+      "id": "national-preferential-housing-pension-2026", "name": "우대형 주택연금", "summary": "저가 1주택을 보유한 기초연금 수급자에게 일반형보다 높은 월지급금을 제공하는 주택연금입니다.",
+      "managingOrganization": "한국주택금융공사", "managingDepartment": "주택연금처", "status": "ACTIVE", "coverage": ["전국"], "category": "LIVING", "relatedCategories": ["HOUSING"], "serviceTypes": ["PENSION", "HOUSING_FINANCE"],
+      "eligibility": { "minAge": 55, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_PENSION_RECIPIENT"], "conditions": ["주택소유자 또는 배우자가 55세 이상", "부부 기준 일정 가격 미만 1주택 소유", "주택소유자 또는 배우자가 기초연금 수급권자", "세부 주택가격 기준은 신청 시 확인"] },
+      "benefits": ["일반 주택연금보다 우대한 월지급금", "담보주택 평생거주와 국가 지급보증"], "requiredDocuments": ["일반 주택연금 서류", "기초연금 수급 확인자료"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "한국주택금융공사 상담 후 신청", "organization": "한국주택금융공사", "contact": "1688-8114" },
+      "source": { "name": "한국주택금융공사 내게 맞는 주택연금", "url": "https://www.hf.go.kr/ko/sub03/sub03_02_01.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "HOME_OWNER", "BASIC_PENSION_RECIPIENT", "LOW_INCOME"]
+    },
+    {
+      "id": "national-happy-housing-senior-2026", "name": "행복주택 고령자 공급", "summary": "무주택 고령자에게 교통이 편리한 공공임대주택의 고령자 공급물량을 제공합니다.",
+      "managingOrganization": "국토교통부·LH·지방공사", "managingDepartment": "공공주택정책과", "status": "ACTIVE", "coverage": ["전국-공고별상이"], "category": "HOUSING", "relatedCategories": ["SAFETY"], "serviceTypes": ["PUBLIC_RENTAL", "ACCESSIBLE_HOUSING"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["PUBLIC_HOUSING_INCOME_LIMIT"], "conditions": ["무주택세대구성원", "고령자 계층 소득·자산·자동차 기준 충족", "개별 단지 입주자모집공고 기준 우선"] },
+      "benefits": ["시세보다 저렴한 공공임대주택", "고령자용 편의시설 적용 가능"], "requiredDocuments": ["공급신청서", "주민등록등·초본", "가족관계·소득·자산 확인서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "마이홈·LH청약플러스의 단지별 공고에 신청", "organization": "LH·지방공사", "contact": "1600-1004" },
+      "source": { "name": "마이홈 행복주택 안내", "url": "https://www.myhome.go.kr/hws/portal/cont/selectHappyHouseView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "HOUSING_INSTABILITY", "RENT_BURDEN", "ACCESSIBLE_HOUSING_NEED"]
+    },
+    {
+      "id": "national-senior-welfare-housing-2026", "name": "고령자복지주택", "summary": "65세 이상 저소득 무주택 어르신에게 주거약자용 공공임대와 사회복지시설을 함께 제공합니다.",
+      "managingOrganization": "국토교통부·LH·지방자치단체", "managingDepartment": "주거복지지원과", "status": "ACTIVE", "coverage": ["전국-공고별상이"], "category": "HOUSING", "relatedCategories": ["CARE", "SAFETY", "MEDICAL"], "serviceTypes": ["PUBLIC_RENTAL", "ACCESSIBLE_HOUSING", "WELFARE_FACILITY"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW", "MEDIUM"], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "PUBLIC_HOUSING_INCOME_LIMIT"], "conditions": ["65세 이상 무주택세대구성원", "공고별 소득·자산과 우선순위 기준", "해당 지역 거주기간 등 배점 적용 가능"] },
+      "benefits": ["무장애 설계를 적용한 저렴한 임대주택", "단지 내 사회복지시설과 돌봄·건강 프로그램 연계"], "requiredDocuments": ["신청서", "주민등록·가족관계 서류", "수급·차상위·장기요양 등 우선순위 증빙"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "마이홈·LH 공고 확인 후 지정 접수처 신청", "organization": "LH·지방자치단체", "contact": "1600-1004" },
+      "source": { "name": "마이홈 고령자복지주택 모집공고 예시", "url": "https://www.myhome.go.kr/hws/portal/sch/selectRsdtRcritNtcDetailView.do?pblancId=19864", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "LOW_INCOME", "HOUSING_INSTABILITY", "HOME_SAFETY_NEED"]
+    },
+    {
+      "id": "national-emergency-housing-support-2026", "name": "긴급복지 주거지원", "summary": "갑작스러운 위기로 거처를 잃거나 주거비를 감당하기 어려운 가구에 임시거소나 주거비를 지원합니다.",
+      "managingOrganization": "보건복지부·지방자치단체", "managingDepartment": "기초생활보장과", "status": "ACTIVE", "coverage": ["전국"], "category": "HOUSING", "relatedCategories": ["SAFETY", "LIVING"], "serviceTypes": ["TEMPORARY_HOUSING", "HOUSING_COST_SUPPORT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["HIGH"], "incomeTypes": ["EMERGENCY_WELFARE_INCOME_LIMIT"], "conditions": ["화재·퇴거·소득상실 등 위기사유", "긴급복지 소득·재산·금융재산 기준 심사", "다른 법률 지원이 우선되는 경우 제한"] },
+      "benefits": ["임시거소 제공 또는 지역·가구원수별 주거지원", "필요 시 생계·의료 등 긴급지원 연계"], "requiredDocuments": ["신분증", "임대차·퇴거·화재 등 위기사유 증빙", "금융정보 제공동의 등 조사서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "시군구·행정복지센터·129에 지원 요청 또는 신고", "organization": "시군구청·읍면동 행정복지센터", "contact": "129" },
+      "source": { "name": "복지로 긴급복지 지원 안내", "url": "https://m.bokjiro.go.kr/ssis-tem/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00003180&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["URGENT_CRISIS", "HOUSING_INSTABILITY", "EVICTION_RISK", "LOW_INCOME"]
+    },
+    {
+      "id": "national-housing-vulnerable-moving-support-2026", "name": "주거취약계층 이주지원", "summary": "쪽방·고시원·반지하 등 열악한 곳에서 공공임대로 옮기는 가구에 상담과 이주비·생필품 등을 연계합니다.",
+      "managingOrganization": "국토교통부·LH·지방자치단체", "managingDepartment": "주거복지지원과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "HOUSING", "relatedCategories": ["LIVING", "SAFETY"], "serviceTypes": ["HOUSING_COUNSELING", "MOVING_COST", "PUBLIC_RENTAL"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["PUBLIC_HOUSING_INCOME_LIMIT", "LOCAL_LOW_INCOME"], "conditions": ["쪽방·고시원·여인숙·반지하 등 주거취약 거처 거주", "공공임대 입주자격과 거주기간 등 사업 기준", "이사비 지원 여부와 금액은 지자체 확인"] },
+      "benefits": ["공공임대 이주상담과 입주 연계", "지자체별 이사비·생필품 등 정착지원"], "requiredDocuments": ["거주사실 확인서류", "주민등록·소득·자산 서류", "임대차계약서·이사비 증빙"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "주거복지센터·행정복지센터·LH에 상담 신청", "organization": "지역 주거복지센터·LH", "contact": "1600-1004" },
+      "source": { "name": "마이홈 주거취약계층 주거지원", "url": "https://www.myhome.go.kr/hws/portal/cont/selectHousingSupVulnerableGroupsView.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["HOUSING_INSTABILITY", "SUBSTANDARD_HOUSING", "LOW_INCOME", "MOVING_SUPPORT_NEED"]
+    }
+  ]
+}

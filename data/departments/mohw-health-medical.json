@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": {
+    "id": "mohw-health-medical",
+    "name": "보건복지부·건강보험공단 보건의료",
+    "scope": "치매, 노인 수술, 치과, 고액 의료비"
+  },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-dementia-exam-cost-2026",
+      "name": "치매검사비 지원",
+      "summary": "치매 진단·감별검사가 필요한 저소득 어르신의 협약병원 검사비를 지원합니다.",
+      "managingOrganization": "보건복지부·치매안심센터",
+      "managingDepartment": "노인건강과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["CARE"],
+      "serviceTypes": ["MEDICAL_COST", "CONSULTATION"],
+      "eligibility": {
+        "minAge": 60,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["MEDIAN_INCOME_120_OR_LESS"],
+        "conditions": ["치매안심센터가 협약병원 진단·감별검사가 필요하다고 판단", "치매안심센터 직접 진단검사는 소득판정 없이 무료", "입원 중 외래검사는 사전 협의 필요"]
+      },
+      "benefits": ["진단검사비 1인당 15만원 상한", "감별검사비 의료기관 종별 1인당 11만원 상한"],
+      "requiredDocuments": ["신분증", "소득기준 확인서류", "치매안심센터가 안내하는 의뢰서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "검사 전 주소지 치매안심센터 상담", "organization": "치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "복지로 치매검사비 지원", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00005004&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["OLD_AGE", "COGNITIVE_RISK", "HIGH_MEDICAL_EXPENSE", "LOW_INCOME"]
+    },
+    {
+      "id": "national-dementia-treatment-cost-2026",
+      "name": "치매치료관리비 지원",
+      "summary": "치매 진단 후 치료약을 복용하는 대상자의 약제비와 처방 당일 진료비 본인부담금을 지원합니다.",
+      "managingOrganization": "보건복지부·치매안심센터",
+      "managingDepartment": "노인건강과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["CARE"],
+      "serviceTypes": ["MEDICAL_COST"],
+      "eligibility": {
+        "minAge": 60,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["LOCAL_DEMENTIA_INCOME_LIMIT"],
+        "conditions": ["의료기관에서 치매 상병코드로 진단", "지원 대상 치매치료제를 복용", "소득기준은 관할 치매안심센터 확인", "2026년 8월부터 보훈의료대상자도 지역 센터를 통한 지원 가능"]
+      },
+      "benefits": ["치매 약제비와 약 처방 당일 진료비 본인부담금 월 최대 3만원", "연 최대 36만원"],
+      "requiredDocuments": ["지원 약제가 적힌 처방전", "신분증", "통장 사본", "가족 대리 시 가족관계증명서"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치매안심센터 방문 신청", "organization": "주소지 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "복지로 보훈의료대상자 치매지원 확대 안내", "url": "https://www.bokjiro.go.kr/ssis-tbu/cms/pc/news/news/1310170_1114.html", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["OLD_AGE", "COGNITIVE_RISK", "HIGH_MEDICAL_EXPENSE", "LOW_INCOME"]
+    },
+    {
+      "id": "national-knee-replacement-support-2026",
+      "name": "노인 무릎인공관절 수술 지원",
+      "summary": "무릎인공관절 수술이 필요한 저소득 만 60세 이상 어르신의 수술비를 지원합니다.",
+      "managingOrganization": "보건복지부·노인의료나눔재단",
+      "managingDepartment": "노인건강과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["MOBILITY"],
+      "serviceTypes": ["MEDICAL_COST"],
+      "eligibility": {
+        "minAge": 60,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": ["MEDIUM", "HIGH"],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "SINGLE_PARENT_SUPPORT"],
+        "conditions": ["건강보험급여의 인공관절치환술 인정기준에 준하는 질환", "지원 결정 전에 수술하면 지원 제외 가능", "예산 소진 시 마감 가능"]
+      },
+      "benefits": ["검사비·진료비·수술비 중 본인부담금 일부", "지원 한도는 신청연도 지침과 보건소 확인 필요"],
+      "requiredDocuments": ["진단서 또는 소견서", "수급자·차상위 등 자격증명서", "지원 신청서"],
+      "application": { "periodType": "BUDGET_LIMITED", "deadline": null, "method": "반드시 수술 전에 주소지 보건소 방문 신청", "organization": "시군구 보건소", "contact": "02-711-6599" },
+      "source": { "name": "복지로 노인 무릎인공관절 수술 지원", "url": "https://www.bokjiro.go.kr/ssis-tbu/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00001179", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["OLD_AGE", "LOW_INCOME", "MOBILITY_DIFFICULTY", "HIGH_MEDICAL_EXPENSE"]
+    },
+    {
+      "id": "national-eye-exam-surgery-2026",
+      "name": "노인 안검진 및 개안수술비 지원",
+      "summary": "저소득 어르신에게 안과 검진과 백내장·망막질환·녹내장 등의 수술비를 지원합니다.",
+      "managingOrganization": "보건복지부·한국실명예방재단",
+      "managingDepartment": "노인건강과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["MOBILITY", "SAFETY"],
+      "serviceTypes": ["MEDICAL_EXAM", "MEDICAL_COST"],
+      "eligibility": {
+        "minAge": 60,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "SINGLE_PARENT_SUPPORT"],
+        "conditions": ["안검진은 만 60세 이상 중 저소득층 우선", "개안수술은 수술이 필요한 안질환자이면서 법정 저소득 자격 필요", "지원 결정 전 발생비용과 비급여는 제외 가능"]
+      },
+      "benefits": ["정밀 안저·안압·굴절 등 안검진", "개안수술 관련 본인부담금 지원"],
+      "requiredDocuments": ["안과 진단서 또는 소견서", "수급자·차상위 등 자격증명서", "지원 신청서"],
+      "application": { "periodType": "BUDGET_LIMITED", "deadline": null, "method": "검진·수술 전에 시군구 또는 보건소 문의 후 신청", "organization": "시군구 보건소", "contact": "02-718-1102" },
+      "source": { "name": "복지로 노인 개안수술비 지원", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00001115", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["OLD_AGE", "LOW_INCOME", "VISION_DIFFICULTY", "HIGH_MEDICAL_EXPENSE", "FALL_RISK"]
+    },
+    {
+      "id": "national-senior-denture-insurance-2026",
+      "name": "노인 틀니 건강보험 급여",
+      "summary": "만 65세 이상 건강보험 가입자·피부양자의 완전틀니와 부분틀니 비용에 건강보험을 적용합니다.",
+      "managingOrganization": "국민건강보험공단",
+      "managingDepartment": "보험급여 담당",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["MEAL"],
+      "serviceTypes": ["MEDICAL_DISCOUNT"],
+      "eligibility": {
+        "minAge": 65,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["ANY"],
+        "conditions": ["완전틀니는 위턱 또는 아래턱에 치아가 전혀 없는 경우", "부분틀니는 남은 치아를 이용해 제작 가능한 경우", "원칙적으로 1악당 7년에 1회"]
+      },
+      "benefits": ["레진상·금속상 완전틀니 건강보험 적용", "고리 유지형 금속상 부분틀니 건강보험 적용", "일반 건강보험 본인부담률 30%이며 의료급여·차상위는 별도 경감"]
+      ,"requiredDocuments": ["신분증", "치과 진료 후 급여대상자 등록 신청"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치과에서 대상 판정 후 요양기관 또는 건강보험공단에 등록", "organization": "치과 병의원·국민건강보험공단", "contact": "1577-1000" },
+      "source": { "name": "국민건강보험공단 노인틀니 건강보험 적용", "url": "https://www.nhis.or.kr/static/html/wbdf/e/03/wbdfe0103_pop_12longdesc.html", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["OLD_AGE", "DENTAL_DIFFICULTY", "MEAL_PREP_DIFFICULTY", "HIGH_MEDICAL_EXPENSE"]
+    },
+    {
+      "id": "national-catastrophic-medical-expense-2026",
+      "name": "재난적의료비 지원사업",
+      "summary": "가구의 부담능력을 넘어서는 과도한 의료비가 발생한 경우 본인부담 의료비 일부를 지원합니다.",
+      "managingOrganization": "보건복지부·국민건강보험공단",
+      "managingDepartment": "필수의료총괄과",
+      "status": "ACTIVE",
+      "coverage": ["전국"],
+      "category": "MEDICAL",
+      "relatedCategories": ["LIVING"],
+      "serviceTypes": ["MEDICAL_COST"],
+      "eligibility": {
+        "minAge": null,
+        "maxAge": null,
+        "livingAlone": null,
+        "assistanceNeed": [],
+        "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "MEDIAN_INCOME_100_OR_LESS", "INDIVIDUAL_REVIEW_TO_200"],
+        "conditions": ["질환·소득·재산·의료비 부담 기준을 모두 심사", "재산과표 합계 7억원 이하", "중위소득 100~200%는 개별심사 가능", "민간보험금과 다른 의료비 지원은 차감"]
+      },
+      "benefits": ["급여 일부 본인부담금과 지원대상 비급여의 일부", "소득수준에 따라 지원 비율 차등"],
+      "requiredDocuments": ["재난적의료비 지급신청서", "진단서", "입퇴원확인서", "진료비 계산서·영수증", "가족관계와 민간보험 확인서류"],
+      "application": { "periodType": "DEADLINE_AFTER_DISCHARGE", "deadline": "퇴원일 또는 최종진료일 다음 날부터 180일 이내", "method": "건강보험공단 지사 방문 신청", "organization": "국민건강보험공단", "contact": "1577-1000" },
+      "source": { "name": "복지로 재난적의료비 지원 사업", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00003247", "basisYear": 2026, "verifiedAt": "2026-09-04" },
+      "matchTags": ["HIGH_MEDICAL_EXPENSE", "LOW_INCOME", "URGENT_CARE_NEED"]
+    }
+  ]
+}

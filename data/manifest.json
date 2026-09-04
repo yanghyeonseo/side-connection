@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "2.0.0",
+  "dataset": {
+    "name": "곁이음 해커톤 복지사업 데이터",
+    "asOf": "2026-09-04",
+    "recordCount": 72,
+    "departmentCount": 12,
+    "locale": "ko-KR",
+    "disclaimer": "해커톤용 공식 안내 요약입니다. 실제 신청 전 담당기관에서 최신 자격, 중복 제한, 예산과 접수기간을 확인해야 합니다."
+  },
+  "departments": [
+    {
+      "id": "mohw-elderly-care",
+      "name": "보건복지부 노인정책·요양",
+      "file": "departments/mohw-elderly-care.json",
+      "programCount": 6
+    },
+    {
+      "id": "income-living-support",
+      "name": "소득·생활지원 관련 부처",
+      "file": "departments/income-living-support.json",
+      "programCount": 6
+    },
+    {
+      "id": "mohw-health-medical",
+      "name": "보건복지부·건강보험공단 보건의료",
+      "file": "departments/mohw-health-medical.json",
+      "programCount": 6
+    },
+    {
+      "id": "molit-housing",
+      "name": "국토교통부·LH 주거복지",
+      "file": "departments/molit-housing.json",
+      "programCount": 6
+    },
+    {
+      "id": "energy-utility-support",
+      "name": "에너지·공공요금 관련 기관",
+      "file": "departments/energy-utility-support.json",
+      "programCount": 6
+    },
+    {
+      "id": "local-government-welfare",
+      "name": "광역자치단체 노인·돌봄복지",
+      "file": "departments/local-government-welfare.json",
+      "programCount": 6
+    },
+    {
+      "id": "national-preventive-health",
+      "name": "건강보험공단·질병관리청 예방건강",
+      "file": "departments/national-preventive-health.json",
+      "programCount": 6
+    },
+    {
+      "id": "dementia-center-support",
+      "name": "치매안심센터 환자·가족지원",
+      "file": "departments/dementia-center-support.json",
+      "programCount": 6
+    },
+    {
+      "id": "medical-expense-security",
+      "name": "보건복지부 의료급여·중증질환",
+      "file": "departments/medical-expense-security.json",
+      "programCount": 6
+    },
+    {
+      "id": "community-care-safety",
+      "name": "지역사회 돌봄·안전망",
+      "file": "departments/community-care-safety.json",
+      "programCount": 6
+    },
+    {
+      "id": "additional-housing-support",
+      "name": "고령자·위기가구 추가 주거지원",
+      "file": "departments/additional-housing-support.json",
+      "programCount": 6
+    },
+    {
+      "id": "additional-living-support",
+      "name": "생활비·이용료 추가지원",
+      "file": "departments/additional-living-support.json",
+      "programCount": 6
+    }
+  ]
+}

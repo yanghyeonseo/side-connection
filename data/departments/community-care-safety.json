@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "community-care-safety", "name": "지역사회 돌봄·안전망", "scope": "긴급돌봄, 지역서비스, 식품지원, 안부확인, 노인보호" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-emergency-care-2026", "name": "긴급돌봄 지원사업", "summary": "질병·부상·주 돌봄자 부재로 갑자기 생긴 돌봄 공백에 단기 재가돌봄을 제공합니다.",
+      "managingOrganization": "보건복지부", "managingDepartment": "사회서비스사업과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["MEAL", "SAFETY"], "serviceTypes": ["VISIT_CARE", "HOUSEKEEPING", "MEAL_SUPPORT"],
+      "eligibility": { "minAge": 13, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["ANY"], "conditions": ["갑작스러운 위기로 긴급성·돌봄필요성·다른 서비스로 대체 불가 요건 충족", "지역별 시행 여부 확인", "소득에 따라 본인부담 차등"] },
+      "benefits": ["일시 재가돌봄", "가사·이동·식사 지원"], "requiredDocuments": ["신분증", "진단서·퇴원확인서 등 긴급 돌봄필요 증빙"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "행정복지센터 또는 사회서비스원에 신청", "organization": "읍면동 행정복지센터·지역 사회서비스원", "contact": "1522-0365" },
+      "source": { "name": "복지로 긴급돌봄 지원사업", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00005442&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["URGENT_CARE_NEED", "DAILY_LIVING_DIFFICULTY", "FAMILY_SUPPORT_ABSENT"]
+    },
+    {
+      "id": "national-community-social-service-investment-2026", "name": "지역사회서비스 투자사업", "summary": "지자체가 지역 수요에 맞춰 노인 운동·돌봄여행·안마·정신건강 등 바우처 서비스를 제공합니다.",
+      "managingOrganization": "보건복지부·지방자치단체", "managingDepartment": "사회서비스사업과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["MEDICAL", "MOBILITY"], "serviceTypes": ["E_VOUCHER", "EXERCISE", "TRAVEL_SUPPORT", "MASSAGE"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW", "MEDIUM"], "incomeTypes": ["MEDIAN_INCOME_140_OR_LESS", "LOCAL_ORDINANCE"], "conditions": ["기준 중위소득 140% 이하 원칙이나 사업별 상이", "지자체별 제공 서비스·연령·접수기간이 다름"] },
+      "benefits": ["노인 맞춤운동·돌봄여행 등 지역별 사회서비스 이용권", "소득수준별 정부지원금 차등"], "requiredDocuments": ["신분증", "사회보장급여 신청서", "사업별 진단서·추천서"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "행정복지센터에 지역 제공사업 확인 후 신청", "organization": "읍면동 행정복지센터", "contact": "1566-3232" },
+      "source": { "name": "복지로 지역사회서비스 투자사업", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00001061&wlfareInfoReldBztpCd=01", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "MOBILITY_DIFFICULTY", "SOCIAL_ISOLATION", "LOW_INCOME"]
+    },
+    {
+      "id": "national-wellbeing-post-service-2026", "name": "안부살핌 우편서비스", "summary": "우편물을 정기 배송하며 사회적 고립 위험 1인가구의 안부를 확인하고 위기를 지자체에 알립니다.",
+      "managingOrganization": "행정안전부·우정사업본부·지방자치단체", "managingDepartment": "복지자원연계팀", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "SAFETY", "relatedCategories": ["CARE"], "serviceTypes": ["SAFETY_CHECK", "DELIVERY", "CASE_REFERRAL"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": true, "assistanceNeed": ["LOW", "MEDIUM"], "incomeTypes": ["LOCAL_ORDINANCE"], "conditions": ["주기적 안부확인이 필요한 사회적 고립 위험가구", "참여 지자체의 집중관리 대상 선정", "일부 공적 돌봄서비스 이용자는 제외"] },
+      "benefits": ["생활용품 등 우편물 정기 배송", "집배원의 안부확인과 위기징후 지자체 연계"], "requiredDocuments": ["지자체 안부살핌 신청·동의서"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "주소지 행정복지센터에 시행 여부 문의", "organization": "참여 지방자치단체", "contact": "주소지 관할 지자체" },
+      "source": { "name": "복지로 안부살핌 우편서비스", "url": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00006237", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LIVING_ALONE", "SOCIAL_ISOLATION", "EMERGENCY_SAFETY_RISK"]
+    },
+    {
+      "id": "national-food-bank-market-2026", "name": "기부식품등 제공사업(푸드뱅크·푸드마켓)", "summary": "경제적으로 어려운 가구에 기부받은 식품과 생활용품을 지역 푸드뱅크·마켓을 통해 제공합니다.",
+      "managingOrganization": "보건복지부·한국사회복지협의회", "managingDepartment": "사회서비스정책과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "MEAL", "relatedCategories": ["LIVING"], "serviceTypes": ["FOOD_PACKAGE", "IN_KIND", "DELIVERY"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["BASIC_LIVELIHOOD_ANY", "NEAR_POVERTY", "EMERGENCY_WELFARE_RECIPIENT", "LOCAL_LOW_INCOME"], "conditions": ["경제적으로 어려운 개인 이용자 중 지자체·기관 추천", "긴급지원대상·차상위 등 우선순위와 이용기간은 지역별 상이"] },
+      "benefits": ["기부 식품과 생활용품 무상 제공", "거동 곤란 시 지역에 따라 배달 가능"], "requiredDocuments": ["신분증", "수급자·차상위 등 자격 확인서류 또는 추천서"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "행정복지센터 또는 지역 푸드뱅크에 이용자 추천·신청 문의", "organization": "광역·기초 푸드뱅크·푸드마켓", "contact": "1688-1377" },
+      "source": { "name": "전국푸드뱅크", "url": "https://www.foodbank1377.org/", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["LOW_INCOME", "FOOD_INSECURITY", "MEAL_PREP_DIFFICULTY", "LIVING_ALONE"]
+    },
+    {
+      "id": "national-elder-protection-agency-2026", "name": "노인보호전문기관 이용", "summary": "학대피해 어르신에게 24시간 상담, 일시보호, 의료·법률·복지서비스 연계를 제공합니다.",
+      "managingOrganization": "보건복지부·노인보호전문기관", "managingDepartment": "노인정책과", "status": "ACTIVE", "coverage": ["전국"], "category": "SAFETY", "relatedCategories": ["CARE", "MEDICAL", "HOUSING"], "serviceTypes": ["CRISIS_COUNSELING", "TEMPORARY_SHELTER", "LEGAL_SUPPORT", "MEDICAL_REFERRAL"],
+      "eligibility": { "minAge": 65, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW", "MEDIUM", "HIGH"], "incomeTypes": ["ANY"], "conditions": ["학대피해 노인과 가족 또는 학대 의심 상황", "긴급 위험 시 112 신고 병행"] },
+      "benefits": ["전문상담·심리치료", "일시보호와 의료지원", "법률·복지서비스 연계"], "requiredDocuments": ["신고·상담 단계에는 별도 서류 불필요", "지원 과정에서 기관이 요청하는 신원·사례 자료"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "전화·신고앱·지역 노인보호전문기관 상담", "organization": "노인보호전문기관", "contact": "1577-1389" },
+      "source": { "name": "복지로 노인보호전문기관", "url": "https://www.bokjiro.go.kr/ssis-tbu/ssis-tbu/twataa/wlfareInfo/moveTWAT52011M.do?wlfareInfoId=WLF00003252", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "ABUSE_RISK", "EMERGENCY_SAFETY_RISK", "HOUSING_INSTABILITY"]
+    },
+    {
+      "id": "local-senior-welfare-center-programs-2026", "name": "노인복지관·경로당 여가복지 프로그램", "summary": "지역 노인복지관과 경로당에서 식사, 건강, 평생교육, 상담과 사회참여 프로그램을 이용합니다.",
+      "managingOrganization": "지방자치단체", "managingDepartment": "노인복지 담당부서", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["MEAL", "MEDICAL"], "serviceTypes": ["SOCIAL_PARTICIPATION", "EDUCATION", "MEAL_SUPPORT", "COUNSELING"],
+      "eligibility": { "minAge": 60, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW"], "incomeTypes": ["ANY", "LOCAL_ORDINANCE"], "conditions": ["시설별 회원가입 연령·거주지·이용료 기준이 다름", "급식과 특별프로그램은 별도 대상 선정 가능"] },
+      "benefits": ["건강·취미·평생교육", "상담·사회참여", "시설에 따라 경로식당·무료급식"], "requiredDocuments": ["신분증", "사진 등 시설별 회원가입 서류", "감면 대상은 수급자격 증명"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "거주지 노인복지관·경로당에 회원가입 및 프로그램 신청", "organization": "지역 노인복지관·경로당", "contact": "129" },
+      "source": { "name": "복지로 노령층 복지서비스 안내", "url": "https://www.bokjiro.go.kr/ssis-tbu/cms/pc/common/download/2024%EB%85%84%20%EC%95%88%EB%82%B4%EC%B1%85%EC%9E%90%20%5B%EB%85%B8%EB%A0%B9%EC%B8%B5%5D.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["OLD_AGE", "SOCIAL_ISOLATION", "MEAL_DIFFICULTY", "LIFELONG_LEARNING_NEED"]
+    }
+  ]
+}

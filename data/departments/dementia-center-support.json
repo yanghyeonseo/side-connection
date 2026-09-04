@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "2.0.0",
+  "department": { "id": "dementia-center-support", "name": "치매안심센터 환자·가족지원", "scope": "치매 조호, 쉼터, 가족지원, 실종예방, 공공후견" },
+  "asOf": "2026-09-04",
+  "programs": [
+    {
+      "id": "national-dementia-care-supplies-2026", "name": "치매환자 조호물품 지원", "summary": "치매안심센터 등록 치매환자에게 돌봄에 필요한 위생·소모품을 지원합니다.",
+      "managingOrganization": "보건복지부·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["LIVING", "MEDICAL"], "serviceTypes": ["CARE_SUPPLIES", "IN_KIND"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["ANY", "LOCAL_ORDINANCE"], "conditions": ["치매안심센터 등록 치매환자", "품목·제공기간·소득기준은 관할 센터별 확인"] },
+      "benefits": ["기저귀·방수매트 등 센터가 정한 조호물품 제공"], "requiredDocuments": ["신분증", "치매 진단 확인서류", "가족 대리 시 관계 확인서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "거주지 치매안심센터 등록 후 신청", "organization": "시군구 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "중앙치매센터 치매어르신 서비스 안내", "url": "https://www.nid.or.kr/download/download.aspx?NIDAPP=Y&filename=2023%EB%85%84+%EC%B9%98%EB%A7%A4%EC%96%B4%EB%A5%B4%EC%8B%A0%EC%84%9C%EB%B9%84%EC%8A%A4%EC%95%88%EB%82%B4%EC%84%9C.pdf&path=%2F%2Fansim%2Fsupport_notice%2F202311091753032811.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["COGNITIVE_RISK", "DEMENTIA_DIAGNOSIS", "CARE_SUPPLY_NEED", "LOW_INCOME"]
+    },
+    {
+      "id": "national-dementia-shelter-2026", "name": "치매환자 쉼터 프로그램", "summary": "경증 치매환자에게 낮 시간 인지자극·건강관리 프로그램과 돌봄을 제공합니다.",
+      "managingOrganization": "보건복지부·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["MEDICAL", "SAFETY"], "serviceTypes": ["DAY_CARE", "COGNITIVE_PROGRAM", "HEALTH_MANAGEMENT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["LOW", "MEDIUM"], "incomeTypes": ["ANY"], "conditions": ["치매안심센터에 등록된 경증 치매환자 중심", "장기요양서비스 이용 여부 등에 따라 제한 가능", "운영 시간과 대기자는 센터별 상이"] },
+      "benefits": ["인지재활·인지자극 프로그램", "건강관리와 낮 시간 보호", "가족 돌봄부담 완화"], "requiredDocuments": ["신분증", "치매 진단 확인서류", "센터 등록서류"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "치매안심센터 상담·등록 후 프로그램 신청", "organization": "시군구 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "중앙치매센터 치매어르신 서비스 안내", "url": "https://www.nid.or.kr/download/download.aspx?NIDAPP=Y&filename=2023%EB%85%84+%EC%B9%98%EB%A7%A4%EC%96%B4%EB%A5%B4%EC%8B%A0%EC%84%9C%EB%B9%84%EC%8A%A4%EC%95%88%EB%82%B4%EC%84%9C.pdf&path=%2F%2Fansim%2Fsupport_notice%2F202311091753032811.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["DEMENTIA_DIAGNOSIS", "COGNITIVE_RISK", "DAYTIME_CARE_NEED", "SOCIAL_ISOLATION"]
+    },
+    {
+      "id": "national-dementia-family-class-2026", "name": "치매가족교실·자조모임", "summary": "치매환자 가족에게 돌봄 교육, 상담, 자조모임과 치유 프로그램을 제공합니다.",
+      "managingOrganization": "보건복지부·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "CARE", "relatedCategories": ["MEDICAL"], "serviceTypes": ["FAMILY_EDUCATION", "COUNSELING", "SELF_HELP_GROUP"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": [], "incomeTypes": ["ANY"], "conditions": ["치매환자를 돌보는 가족·보호자", "세부 프로그램과 모집기간은 센터별 상이"] },
+      "benefits": ["치매 이해와 돌봄기술 교육", "가족상담·돌봄부담 분석", "자조모임·힐링 프로그램"], "requiredDocuments": ["신분증", "센터가 요청하는 환자·가족 관계 확인정보"],
+      "application": { "periodType": "ANNOUNCEMENT_BASED", "deadline": null, "method": "거주지 치매안심센터에 일정 문의 후 신청", "organization": "시군구 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "국가치매교육 치매가족 지원사업", "url": "https://edu.nid.or.kr/common/menu/html/900001001/detail.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["DEMENTIA_DIAGNOSIS", "FAMILY_CAREGIVER_BURDEN", "COUNSELING_NEED"]
+    },
+    {
+      "id": "national-dementia-wandering-id-2026", "name": "배회가능 어르신 인식표 발급", "summary": "실종 위험이 있는 치매 어르신이 발견됐을 때 보호자에게 빠르게 인계되도록 고유번호 인식표를 발급합니다.",
+      "managingOrganization": "보건복지부·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국"], "category": "SAFETY", "relatedCategories": ["CARE"], "serviceTypes": ["WANDERING_PREVENTION", "IDENTIFICATION_TAG"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["ANY"], "conditions": ["실종 위험이 있는 치매환자 또는 인지저하 어르신", "신청 가능한 보호자 범위는 센터 확인"] },
+      "benefits": ["옷에 부착하는 고유번호 인식표 발급", "발견 시 경찰을 통한 보호자 연락 연계"], "requiredDocuments": ["대상자·신청자 신분증", "가족관계증명서 등 관계 확인서류", "사진"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치매안심센터 방문 신청", "organization": "시군구 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "중앙치매센터 치매어르신 서비스 안내", "url": "https://www.nid.or.kr/download/download.aspx?NIDAPP=Y&filename=2023%EB%85%84+%EC%B9%98%EB%A7%A4%EC%96%B4%EB%A5%B4%EC%8B%A0%EC%84%9C%EB%B9%84%EC%8A%A4%EC%95%88%EB%82%B4%EC%84%9C.pdf&path=%2F%2Fansim%2Fsupport_notice%2F202311091753032811.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["DEMENTIA_DIAGNOSIS", "WANDERING_RISK", "LIVING_ALONE", "EMERGENCY_SAFETY_RISK"]
+    },
+    {
+      "id": "national-dementia-gps-support-2026", "name": "치매환자 배회감지기 지원", "summary": "배회·실종 위험이 있는 치매환자에게 위치확인 장치 이용을 연계합니다.",
+      "managingOrganization": "보건복지부·국민건강보험공단·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국-지자체별상이"], "category": "SAFETY", "relatedCategories": ["CARE", "MOBILITY"], "serviceTypes": ["WANDERING_DETECTOR", "ASSISTIVE_EQUIPMENT"],
+      "eligibility": { "minAge": null, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["ANY"], "conditions": ["치매 진단 또는 장기요양 수급 여부 등 경로별 기준 적용", "장기요양 복지용구와 민간 협력 무상지원의 중복 여부 확인"] },
+      "benefits": ["손목형 또는 매트형 배회감지기 이용 연계", "보호자 위치확인과 실종예방 지원"], "requiredDocuments": ["신분증", "치매 진단 또는 장기요양 수급 확인서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치매안심센터 또는 건강보험공단에 이용 경로 문의", "organization": "치매안심센터·국민건강보험공단", "contact": "1899-9988" },
+      "source": { "name": "중앙치매센터 치매어르신 서비스 안내", "url": "https://www.nid.or.kr/download/download.aspx?NIDAPP=Y&filename=2023%EB%85%84+%EC%B9%98%EB%A7%A4%EC%96%B4%EB%A5%B4%EC%8B%A0%EC%84%9C%EB%B9%84%EC%8A%A4%EC%95%88%EB%82%B4%EC%84%9C.pdf&path=%2F%2Fansim%2Fsupport_notice%2F202311091753032811.pdf", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["DEMENTIA_DIAGNOSIS", "WANDERING_RISK", "MOBILITY_DIFFICULTY", "EMERGENCY_SAFETY_RISK"]
+    },
+    {
+      "id": "national-dementia-public-guardianship-2026", "name": "치매공공후견사업", "summary": "의사결정이 어렵고 가족 지원이 부족한 치매환자에게 후견심판 청구와 공공후견인 활동을 지원합니다.",
+      "managingOrganization": "보건복지부·치매안심센터", "managingDepartment": "노인건강과", "status": "ACTIVE", "coverage": ["전국"], "category": "SAFETY", "relatedCategories": ["CARE", "LIVING"], "serviceTypes": ["PUBLIC_GUARDIANSHIP", "LEGAL_SUPPORT", "CASE_MANAGEMENT"],
+      "eligibility": { "minAge": 60, "maxAge": null, "livingAlone": null, "assistanceNeed": ["MEDIUM", "HIGH"], "incomeTypes": ["LOW_INCOME_PRIORITY", "ANY"], "conditions": ["치매 진단을 받고 의사결정 지원이 필요한 사람", "가족 지원이 없거나 실질적으로 어려운 경우 우선", "후견 필요성 조사와 법원 심판 필요"] },
+      "benefits": ["후견심판 청구 절차와 비용 지원", "공공후견인의 재산관리·복지서비스 이용 의사결정 지원"], "requiredDocuments": ["치매 진단서", "신분·가족관계 확인서류", "센터가 안내하는 후견 조사서류"],
+      "application": { "periodType": "ALWAYS_OPEN", "deadline": null, "method": "치매안심센터 상담·사례 발굴 후 신청", "organization": "시군구 치매안심센터", "contact": "1899-9988" },
+      "source": { "name": "국가치매교육 치매공공후견사업", "url": "https://edu.nid.or.kr/common/menu/html/900001001/detail.do", "basisYear": 2026, "verifiedAt": "2026-09-04" }, "matchTags": ["DEMENTIA_DIAGNOSIS", "DECISION_SUPPORT_NEED", "LIVING_ALONE", "FAMILY_SUPPORT_ABSENT", "LEGAL_SUPPORT_NEED"]
+    }
+  ]
+}
