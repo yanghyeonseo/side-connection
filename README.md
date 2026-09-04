@@ -32,17 +32,24 @@ cd backend && uv run pytest
 cd frontend && node welfare-search.test.mjs
 ```
 
-## 환경변수 (저장소 루트 `.env`, git 미추적)
+## 환경변수 (git 미추적)
 
-| 키 | 설명 |
+서버 비밀키는 저장소 루트 `.env`, 프론트 빌드 변수는 `frontend/.env`(예시: `frontend/.env.example`)로
+분리되어 있습니다. 빌드는 루트 `.env`를 읽지 않으므로 비밀키가 번들에 섞일 수 없습니다.
+
+| 키 (루트 `.env`) | 설명 |
 |---|---|
 | `OPENAI_KEY`, `OPENAI_MODEL` | AI 큐레이션·상담원 메모. 없으면 규칙 기반 문구로 동작 |
 | `GOV24_SERVICE_KEY` | [행정안전부] 대한민국 공공서비스(혜택) 정보 인증키 |
 | `WELFARE_INFO_SERVICE_KEY` | [한국사회보장정보원] 복지서비스정보 인증키 |
 | `WELFARE_CENTER_PHONE` / `WELFARE_CENTER_SMS_NUMBER` | 상담 전화·문자 번호 (기본 129) |
+| `GYEOTE_OPEN_DATA_AUTO_REFRESH` | `false`면 주기 갱신 없이 기동 시 캐시가 낡았을 때만 1회 수집 |
+
+| 키 (`frontend/.env`) | 설명 |
+|---|---|
 | `VITE_API_BASE_URL` | 프론트가 부를 백엔드 주소 (`…/api`까지). 비우면 브라우저 내 데모 모드 |
 
-공공데이터는 기동 시 백그라운드로 수집해 `data/cache/`에 캐시하고 24시간마다 갱신합니다. 포털 장애 시 캐시 → 큐레이션 데이터 순으로 동작이 유지됩니다.
+공공데이터는 `data/cache/`에 캐시되며, 기본값은 24시간마다 백그라운드 갱신입니다. 포털 장애 시 캐시 → 큐레이션 데이터 순으로 동작이 유지됩니다.
 
 ## 배포
 
