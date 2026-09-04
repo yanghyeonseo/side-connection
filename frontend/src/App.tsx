@@ -202,7 +202,7 @@ export default function App() {
     {screen === 'brief' && <section className="brief page">
       <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 연결</p><h1>담당자에게<br/>바로 알려주세요.</h1><p className="subcopy">사례번호와 안전한 확인 링크가 함께 전달돼요.</p>
       <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small></div>
-      <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a><a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a></div>
+      <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a>{smsNumber && <a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a>}</div>
       <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
       <p className="disclaimer">계좌번호는 전송하지 않아요. 실제 수신 번호는 환경설정으로 연결할 수 있어요.</p>
     </section>}
