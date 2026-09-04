@@ -14,28 +14,32 @@ KST = ZoneInfo("Asia/Seoul")
 UNANSWERED = "미입력 (확인 필요)"
 
 MULTI_QUESTION_IDS = frozenset(q.id for q in QUESTIONS if q.multiple)
+_QUESTION_OPTIONS = {q.id: q.options for q in QUESTIONS}
 
 # 질문을 보호자 눈높이 문구로 바꾼 보완 폼 정의. options가 없으면 텍스트 입력.
+# 선택지가 있는 질문은 원래 선택지를 그대로 써야 매칭 엔진이 답을 해석할 수 있다.
 HELPER_FIELD_OVERRIDES: dict[str, HelperField] = {
     "birthYear": HelperField(id="birthYear", label="어르신 출생 연도", description="예: 1945", input="number"),
     "area": HelperField(id="area", label="사시는 지역", description="시·군·구까지 적어주세요. 예: 서울특별시 종로구", input="text"),
     "receiving": HelperField(
         id="receiving",
         label="현재 받는 복지급여",
-        description="아는 대로 쉼표로 나눠 적어주세요. 예: 기초연금, 생계비 지원",
-        input="text",
+        description="아는 것을 모두 골라주세요.",
+        options=_QUESTION_OPTIONS["receiving"],
+        multiple=True,
     ),
     "need": HelperField(
         id="need",
         label="가장 필요한 도움",
-        description="예: 생활비, 병원비, 식사·돌봄",
-        input="text",
+        description="해당하는 것을 모두 골라주세요.",
+        options=_QUESTION_OPTIONS["need"],
+        multiple=True,
     ),
     "income": HelperField(
         id="income",
         label="한 달에 들어오는 돈",
         description="연금, 일, 가족 지원을 모두 더한 대략의 금액이에요.",
-        options=["30만 원 아래", "30~60만 원", "60~100만 원", "100만 원 넘게"],
+        options=_QUESTION_OPTIONS["income"],
     ),
 }
 
@@ -67,7 +71,7 @@ def helper_missing_fields(session: Session) -> list[HelperField]:
             continue
         override = HELPER_FIELD_OVERRIDES.get(question.id)
         if override is not None:
-            fields.append(override)
+            fields.append(override.model_copy())
         else:
             fields.append(
                 HelperField(
@@ -76,10 +80,11 @@ def helper_missing_fields(session: Session) -> list[HelperField]:
                     description=question.description,
                     input=question.input,
                     options=question.options,
+                    multiple=bool(question.multiple),
                 )
             )
     if session.answers.get("housing") == "전세·월세예요" and _is_missing(session.answers, "housingDetail"):
-        fields.append(HOUSING_DETAIL_FIELD)
+        fields.append(HOUSING_DETAIL_FIELD.model_copy())
     return fields
 
 

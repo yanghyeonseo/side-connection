@@ -1,14 +1,16 @@
 """로그인 없는 세션. 프론트엔드 `createSession`/`saveAnswer`/`getMatches`와 대응."""
 
 from datetime import datetime
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import ConfigDict, Field
+from pydantic import ConfigDict, Field, StringConstraints
 
 from .common import CamelModel
 
 UserMode = Literal["self", "helper"]
-AnswerValue = str | list[str]
+# 답변 크기 제한: 자유 입력 남용으로 메모리·AI 프롬프트가 부풀지 않게 한다.
+AnswerText = Annotated[str, StringConstraints(max_length=500)]
+AnswerValue = AnswerText | Annotated[list[AnswerText], Field(max_length=20)]
 
 
 class SessionCreate(CamelModel):
@@ -78,6 +80,7 @@ class HelperField(CamelModel):
     description: str | None = None
     input: Literal["text", "number"] | None = None
     options: list[str] | None = None
+    multiple: bool = Field(default=False, description="true면 options에서 여러 개 선택")
 
 
 class HelperCase(CamelModel):
@@ -86,4 +89,4 @@ class HelperCase(CamelModel):
 
 
 class HelperAnswersIn(CamelModel):
-    answers: dict[str, str] = Field(description="보호자가 채운 값. 키는 HelperField.id")
+    answers: dict[str, AnswerText] = Field(description="보호자가 채운 값. 키는 HelperField.id")

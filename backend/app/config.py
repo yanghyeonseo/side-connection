@@ -98,6 +98,22 @@ class Settings(BaseSettings):
         description="문자 수신 번호. 없으면 문자 안내 생략",
     )
 
+    max_sessions: int = Field(
+        default=20_000,
+        ge=1,
+        description="메모리 세션 상한. 넘으면 새 세션 생성을 잠시 거절한다",
+    )
+    case_lookup_limit: int = Field(
+        default=30,
+        ge=1,
+        description="IP당 사례번호 조회 허용 횟수 (case_lookup_window_seconds 동안)",
+    )
+    case_lookup_window_seconds: float = Field(
+        default=300.0,
+        gt=0,
+        description="사례번호 조회 제한 윈도. 8자리 코드 무차별 대입 방지",
+    )
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -14,7 +14,7 @@ from app.schemas.session import (
 from app.services.brief import build_brief
 from app.services.questions import QUESTION_IDS, active_questions, guardian_follow_up
 from app.services.recommend import recommend_for_answers
-from app.services.sessions import Session
+from app.services.sessions import Session, SessionStoreFull
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
@@ -38,7 +38,13 @@ def _view(session: Session) -> SessionView:
 @router.post("", response_model=SessionCreated, status_code=status.HTTP_201_CREATED, summary="세션 생성")
 def create_session(body: SessionCreate, store: SessionStoreDep) -> SessionCreated:
     """프론트엔드 `createSession(mode)`. 로그인 없이 세션 코드만 발급한다."""
-    session = store.create(mode=body.mode, helper_type=body.helper_type)
+    try:
+        session = store.create(mode=body.mode, helper_type=body.helper_type)
+    except SessionStoreFull:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="지금은 이용자가 많습니다. 잠시 후 다시 시도해 주세요.",
+        ) from None
     return SessionCreated(
         session_id=session.id,
         case_code=session.case_code,

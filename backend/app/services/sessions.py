@@ -6,13 +6,17 @@
 
 import secrets
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta, timezone
 from threading import Lock
 
 from app.schemas.session import AnswerValue
 
 CASE_CODE_DIGITS = 8
+
+
+class SessionStoreFull(RuntimeError):
+    """세션 상한 도달. 잠시 후 다시 시도해야 한다."""
 
 
 def _now() -> datetime:
@@ -34,9 +38,15 @@ class Session:
         return _now() >= self.expires_at
 
 
+def _snapshot(session: Session | None) -> Session | None:
+    """락 밖으로 내보낼 복사본. 원본 answers가 동시에 바뀌어도 읽기가 안전하다."""
+    return None if session is None else replace(session, answers=dict(session.answers))
+
+
 class SessionStore:
-    def __init__(self, ttl: timedelta):
+    def __init__(self, ttl: timedelta, max_sessions: int = 20_000):
         self._ttl = ttl
+        self._max_sessions = max_sessions
         self._items: dict[str, Session] = {}
         self._by_case_code: dict[str, str] = {}
         self._lock = Lock()
@@ -45,6 +55,8 @@ class SessionStore:
         now = _now()
         with self._lock:
             self._purge_locked()
+            if len(self._items) >= self._max_sessions:
+                raise SessionStoreFull
             session = Session(
                 id=str(uuid.uuid4()),
                 case_code=self._new_case_code_locked(),
@@ -55,16 +67,16 @@ class SessionStore:
             )
             self._items[session.id] = session
             self._by_case_code[session.case_code] = session.id
-        return session
+            return _snapshot(session)
 
     def get(self, session_id: str) -> Session | None:
         with self._lock:
-            return self._get_locked(session_id)
+            return _snapshot(self._get_locked(session_id))
 
     def get_by_case_code(self, case_code: str) -> Session | None:
         with self._lock:
             session_id = self._by_case_code.get(case_code)
-            return self._get_locked(session_id) if session_id else None
+            return _snapshot(self._get_locked(session_id)) if session_id else None
 
     def set_answer(self, session_id: str, question_id: str, value: AnswerValue) -> Session | None:
         with self._lock:
@@ -72,7 +84,7 @@ class SessionStore:
             if session is None:
                 return None
             session.answers[question_id] = value
-            return session
+            return _snapshot(session)
 
     def merge_answers(self, session_id: str, answers: dict[str, AnswerValue]) -> Session | None:
         with self._lock:
@@ -80,7 +92,7 @@ class SessionStore:
             if session is None:
                 return None
             session.answers.update(answers)
-            return session
+            return _snapshot(session)
 
     def delete(self, session_id: str) -> bool:
         with self._lock:
