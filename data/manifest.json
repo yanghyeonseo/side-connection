@@ -1,12 +1,12 @@
 {
   "schemaVersion": "2.0.0",
   "dataset": {
-    "name": "곁이음 해커톤 복지사업 데이터",
+    "name": "곁이음 큐레이션 복지사업 데이터",
     "asOf": "2026-09-04",
     "recordCount": 72,
     "departmentCount": 12,
     "locale": "ko-KR",
-    "disclaimer": "해커톤용 공식 안내 요약입니다. 실제 신청 전 담당기관에서 최신 자격, 중복 제한, 예산과 접수기간을 확인해야 합니다."
+    "disclaimer": "큐레이션된 공식 안내 요약입니다. 실제 신청 전 담당기관에서 최신 자격, 중복 제한, 예산과 접수기간을 확인해야 합니다."
   },
   "departments": [
     {
