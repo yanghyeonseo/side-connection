@@ -1,6 +1,6 @@
 """곁에 백엔드 API 진입점.
 
-프론트엔드(`frondend/src/api/client.ts`)가 브라우저 안에서 수행하던
+프론트엔드(`frontend/src/api/client.ts`)가 브라우저 안에서 수행하던
 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공한다.
 데이터는 저장소의 `data/` 정적 JSON을 기동 시 한 번 읽어 메모리에 올린다.
 """

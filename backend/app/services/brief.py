@@ -1,4 +1,4 @@
-"""주민센터 전달용 안내문. `frondend/src/App.tsx`의 `brief()`와 같은 형식.
+"""주민센터 전달용 안내문. `frontend/src/App.tsx`의 `brief()`와 같은 형식.
 
 계좌번호는 본문에 넣지 않는다. 방문 시 직접 제시한다.
 """

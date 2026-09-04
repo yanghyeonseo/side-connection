@@ -1,6 +1,6 @@
 """`data/manifest.json`과 부서별 JSON을 읽어 메모리 카탈로그를 만든다.
 
-`frondend/welfare-search.js`의 `loadWelfareCatalog`와 같은 검증을 수행한다.
+`frontend/welfare-search.js`의 `loadWelfareCatalog`와 같은 검증을 수행한다.
 """
 
 import json

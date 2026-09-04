@@ -1,4 +1,4 @@
-"""다중 조건 정적 검색. `frondend/welfare-search.js`의 `searchPrograms` 포팅."""
+"""다중 조건 정적 검색. `frontend/welfare-search.js`의 `searchPrograms` 포팅."""
 
 import unicodedata
 from collections.abc import Iterable

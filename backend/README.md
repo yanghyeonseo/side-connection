@@ -1,6 +1,6 @@
 # 곁에 — 백엔드 API
 
-취약계층 공공지원사업 안내 서비스의 FastAPI 백엔드입니다. 프론트엔드(`frondend/src/api/client.ts`)가 브라우저 안에서 처리하던 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공합니다.
+취약계층 공공지원사업 안내 서비스의 FastAPI 백엔드입니다. 프론트엔드(`frontend/src/api/client.ts`)가 브라우저 안에서 처리하던 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공합니다.
 
 - 데이터는 저장소의 `data/manifest.json`과 `data/departments/*.json`을 기동 시 한 번 읽어 메모리에 올립니다.
 - 로그인·본인인증 없이 세션 코드만으로 동작하고, 답변은 TTL이 지나면 삭제됩니다.

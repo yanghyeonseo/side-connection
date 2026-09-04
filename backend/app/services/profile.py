@@ -1,4 +1,4 @@
-"""질문 답변 → 추천 엔진 프로필 변환. `frondend/src/api/client.ts`의 `answersToProfile` 포팅.
+"""질문 답변 → 추천 엔진 프로필 변환. `frontend/src/api/client.ts`의 `answersToProfile` 포팅.
 
 조건표를 그대로 묻지 않고 상황을 물은 뒤, 여기서 조건 코드로 옮긴다.
 """
