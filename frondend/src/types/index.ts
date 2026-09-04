@@ -50,3 +50,16 @@ export type AdminCase = {
   recommendedBenefits: string[]
   note: string
 }
+
+export type HelperField = {
+  id: string
+  label: string
+  description?: string
+  input?: 'text' | 'number'
+  options?: string[]
+}
+
+export type HelperCase = {
+  caseCode: string
+  missingFields: HelperField[]
+}

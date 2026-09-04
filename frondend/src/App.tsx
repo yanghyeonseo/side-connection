@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { createSession, getAdminCase, getMatches, saveAnswer } from './api/client'
+import { createSession, getAdminCase, getHelperCase, getMatches, saveAnswer, saveHelperAnswers } from './api/client'
 import { questions } from './data/questions'
-import type { AdminCase, AnswerValue, Benefit, MatchingResponse, UserMode } from './types'
+import type { AdminCase, AnswerValue, Benefit, HelperCase, MatchingResponse, UserMode } from './types'
 
-type Screen = 'start' | 'helperType' | 'question' | 'loading' | 'results' | 'detail' | 'brief'
+type Screen = 'start' | 'helperType' | 'question' | 'loading' | 'results' | 'detail' | 'brief' | 'helperInvite'
 
 const helperTypes = ['자녀·가족', '요양보호사·활동지원사', '복지사·공무원', '이웃·지인']
 const regions: Record<string, string[]> = {
@@ -34,6 +34,7 @@ export default function App() {
   const appBasePath = import.meta.env.BASE_URL.replace(/\/$/, '')
   const appPath = window.location.pathname.startsWith(appBasePath) ? window.location.pathname.slice(appBasePath.length) : window.location.pathname
   const adminCode = appPath.match(/^\/admin\/cases\/(\d{6,12})\/?$/)?.[1]
+  const helperCode = appPath.match(/^\/helper\/cases\/(\d{6,12})\/?$/)?.[1]
   const [screen, setScreen] = useState<Screen>('start')
   const [mode, setMode] = useState<UserMode>('self')
   const [helperType, setHelperType] = useState('')
@@ -43,11 +44,13 @@ export default function App() {
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>({})
   const [questionIndex, setQuestionIndex] = useState(0)
   const [matches, setMatches] = useState<MatchingResponse | null>(null)
+  const [matchError, setMatchError] = useState(false)
   const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null)
   const [draft, setDraft] = useState<AnswerValue>('')
   const [regionCity, setRegionCity] = useState('')
   const [regionDistrict, setRegionDistrict] = useState('')
   const [regionDetail, setRegionDetail] = useState('')
+  const [linkCopied, setLinkCopied] = useState(false)
 
   const activeQuestions = useMemo(() => questions.filter((question) => {
     if (question.id === 'lastContact') return typeof answers.children === 'string' && answers.children !== '없어요' && answers.children !== '네, 연락도 잘 돼요'
@@ -89,6 +92,18 @@ export default function App() {
       setDraft(previous.includes(value) ? previous.filter((item) => item !== value) : [...previous, value])
     } else setDraft(value)
   }
+  const findMatches = async (nextAnswers: Record<string, AnswerValue>) => {
+    setScreen('loading')
+    setMatchError(false)
+    try {
+      setMatches(await getMatches(sessionId, nextAnswers))
+    } catch {
+      setMatches({ benefits: [], needsGuardianInput: [] })
+      setMatchError(true)
+    } finally {
+      setScreen('results')
+    }
+  }
   const next = async (value?: AnswerValue, unknown = false) => {
     if (!question) return
     const finalValue = unknown ? '잘 모르겠어요' : (value ?? draft)
@@ -101,8 +116,7 @@ export default function App() {
     if (questionIndex + 1 < activeQuestions.length) {
       setQuestionIndex(questionIndex + 1); setDraft(updated[activeQuestions[questionIndex + 1].id] ?? '')
     } else {
-      setScreen('loading')
-      try { setMatches(await getMatches(sessionId, updated)) } finally { setScreen('results') }
+      void findMatches(updated)
     }
   }
   const previous = () => {
@@ -111,16 +125,25 @@ export default function App() {
     setQuestionIndex(index); setDraft(answers[activeQuestions[index].id] ?? '')
   }
   const caseUrl = `${window.location.origin}${import.meta.env.BASE_URL}admin/cases/${caseCode}`
+  const helperUrl = `${window.location.origin}${import.meta.env.BASE_URL}helper/cases/${caseCode}`
   const callNumber = (import.meta.env.VITE_WELFARE_CENTER_PHONE ?? '129').replace(/[^0-9]/g, '')
   const smsNumber = (import.meta.env.VITE_WELFARE_CENTER_SMS_NUMBER ?? '').replace(/[^0-9]/g, '')
   const smsBody = `복지 지원 상담 요청입니다.\n사례번호: ${caseCode}\n행정 확인 화면: ${caseUrl}`
   const smsHref = `sms:${smsNumber}?body=${encodeURIComponent(smsBody)}`
 
+  const missingCount = Object.values(answers).filter((answer) => answer === '잘 모르겠어요').length
+  const shareHelperLink = async () => {
+    const shareData = { title: '곁이음 보호자 보완', text: '어르신이 답하지 못한 항목을 채워 주세요.', url: helperUrl }
+    if (navigator.share) await navigator.share(shareData)
+    else { await navigator.clipboard?.writeText(helperUrl); setLinkCopied(true) }
+  }
+
   if (adminCode) return <AdministrativeCase caseCode={adminCode} />
+  if (helperCode) return <HelperCompletion caseCode={helperCode} />
 
   return <main className={largeText ? 'app large' : 'app'}>
     <header className="topbar">
-      <button className="brand" onClick={() => setScreen('start')} aria-label="처음으로">곁에<span>·</span></button>
+      <button className="brand" onClick={() => setScreen('start')} aria-label="처음으로">곁이음<span>·</span></button>
       <button className="text-toggle" onClick={() => setLargeText(!largeText)}>{largeText ? '보통 글자' : '큰 글자'}</button>
     </header>
 
@@ -157,8 +180,11 @@ export default function App() {
 
     {screen === 'results' && matches && <section className="results page">
       <p className="eyebrow">도움 찾기 결과</p><h1><em>{matches.benefits.length}가지</em> 도움을<br/>찾아봤어요.</h1>
+      {matchError && <div className="result-state"><b>결과를 불러오지 못했어요.</b><span>인터넷 연결을 확인한 뒤 다시 시도해 주세요.</span><button onClick={() => void findMatches(answers)}>다시 찾기</button></div>}
       {matches.needsGuardianInput.length > 0 && <div className="soft-alert"><b>조금 더 정확히 찾으려면</b><span>{matches.needsGuardianInput.join(', ')}을 확인해 주세요.</span></div>}
+      {!matchError && matches.benefits.length === 0 && <div className="result-state"><b>지금은 딱 맞는 도움을 찾기 어려워요.</b><span>주민센터에서 현재 상황을 한 번 더 확인해 주세요.</span></div>}
       <div className="benefit-list">{matches.benefits.map((benefit) => <button className="benefit-card" key={benefit.id} onClick={() => { setSelectedBenefit(benefit); setScreen('detail') }}><span className="pill">{benefit.tag}</span><h2>{benefit.name}</h2><p>{benefit.summary}</p><Icon name="arrow"/></button>)}</div>
+      {missingCount > 0 && <button className="helper-button" onClick={() => setScreen('helperInvite')}>보호자에게 빈칸 채워달라고 하기 <Icon name="arrow"/></button>}
       <button className="brief-button" onClick={() => setScreen('brief')}>주민센터에 보여줄 안내문 만들기 <Icon name="arrow"/></button>
       <p className="disclaimer">정확한 자격은 주민센터에서 확인해요.</p>
     </section>}
@@ -178,6 +204,13 @@ export default function App() {
       <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
       <p className="disclaimer">계좌번호는 전송하지 않아요. 실제 수신 번호는 환경설정으로 연결할 수 있어요.</p>
     </section>}
+
+    {screen === 'helperInvite' && <section className="brief page">
+      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">보호자에게 부탁하기</p><h1>모르는 항목만<br/>채워주세요.</h1><p className="subcopy">보호자에게 이 링크를 보내면 돼요.</p>
+      <div className="case-code"><span>보호자 보완 사례번호</span><strong>{caseCode}</strong><small>보호자는 비어 있는 항목만 볼 수 있어요.</small></div>
+      <button className="share-button" onClick={shareHelperLink}>{linkCopied ? '링크를 복사했어요' : '보호자에게 링크 보내기'} <Icon name="arrow"/></button>
+      <div className="send-note"><b>보호자가 채우면 결과가 더 정확해져요</b><span>소득, 집 계약, 현재 받는 지원처럼 어르신이 알기 어려운 정보만 요청해요.</span></div>
+    </section>}
   </main>
 }
 
@@ -188,5 +221,16 @@ function AdministrativeCase({ caseCode }: { caseCode: string }) {
   if (error) return <main className="admin-page"><h1>사례를 찾을 수 없어요.</h1><p>사례번호를 다시 확인해 주세요.</p></main>
   if (!caseInfo) return <main className="admin-page"><div className="spinner"/><p>사례 정보를 불러오는 중이에요.</p></main>
   const fields = [['거주지', caseInfo.address], ['가구 구성', caseInfo.household], ['소득 구간', caseInfo.incomeBand], ['공적 급여 수급', caseInfo.publicBenefits], ['부양·가족 관계', caseInfo.familySupport], ['주요 욕구', caseInfo.needs], ['신청 준비 상태', caseInfo.identityAndAccount]]
-  return <main className="admin-page"><header><span>곁에 · 행정 확인용</span><b>사례 {caseInfo.caseCode}</b></header><section><p className="eyebrow">사전상담 정보</p><h1>복지 지원 상담 사례</h1><p className="admin-time">등록 시각 {caseInfo.createdAt}</p><dl>{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><div className="admin-benefits"><b>추천 검토 사업</b>{caseInfo.recommendedBenefits.map((benefit) => <span key={benefit}>{benefit}</span>)}</div><div className="admin-note"><b>판정 유의사항</b><p>{caseInfo.note}</p></div></section></main>
+  return <main className="admin-page"><header><span>곁이음 · 행정 확인용</span><b>사례 {caseInfo.caseCode}</b></header><section><p className="eyebrow">사전상담 정보</p><h1>복지 지원 상담 사례</h1><p className="admin-time">등록 시각 {caseInfo.createdAt}</p><dl>{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><div className="admin-benefits"><b>추천 검토 사업</b>{caseInfo.recommendedBenefits.map((benefit) => <span key={benefit}>{benefit}</span>)}</div><div className="admin-note"><b>판정 유의사항</b><p>{caseInfo.note}</p></div></section></main>
+}
+
+function HelperCompletion({ caseCode }: { caseCode: string }) {
+  const [helperCase, setHelperCase] = useState<HelperCase | null>(null)
+  const [values, setValues] = useState<Record<string, string>>({})
+  const [complete, setComplete] = useState(false)
+  useEffect(() => { getHelperCase(caseCode).then(setHelperCase) }, [caseCode])
+  if (!helperCase) return <main className="admin-page"><div className="spinner"/><p>보완할 항목을 불러오는 중이에요.</p></main>
+  const ready = helperCase.missingFields.every((field) => values[field.id]?.trim())
+  const submit = async () => { await saveHelperAnswers(caseCode, values); setComplete(true) }
+  return <main className="helper-page"><header><span>곁이음</span><b>보호자 입력</b></header>{complete ? <section className="helper-done"><div className="warm-mark">✓</div><h1>잘 받았어요.</h1><p>입력한 내용이 어르신 결과에 반영됐어요.</p></section> : <section><p className="eyebrow">어르신 대신 입력하기</p><h1>아는 내용만<br/>채워주세요.</h1><p className="subcopy">정확하지 않아도 괜찮아요. 최종 확인은 주민센터에서 해요.</p><div className="helper-fields">{helperCase.missingFields.map((field) => <label key={field.id}><b>{field.label}</b>{field.description && <small>{field.description}</small>}{field.options ? <div className="helper-options">{field.options.map((option) => <button className={values[field.id] === option ? 'selected' : ''} key={option} onClick={() => setValues({ ...values, [field.id]: option })}>{option}</button>)}</div> : <input type={field.input ?? 'text'} value={values[field.id] ?? ''} onChange={(event) => setValues({ ...values, [field.id]: event.target.value })} />}</label>)}</div><button className="share-button" disabled={!ready} onClick={submit}>입력 완료 <Icon name="arrow"/></button></section>}</main>
 }

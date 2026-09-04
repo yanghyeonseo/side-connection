@@ -88,7 +88,7 @@ node --test frondend/welfare-search.test.mjs
 
 ---
 
-# 곁에 — 프론트엔드
+# 곁이음 — 프론트엔드
 
 취약계층 공공지원사업 안내 서비스의 모바일 웹 UI입니다.
 
@@ -113,6 +113,8 @@ Pages 빌드는 `/side-connection/` base path를 사용하며 정적 복지 데�
 - `PUT /v1/sessions/:sessionId/answers` — `{ questionId, value }`
 - `POST /v1/sessions/:sessionId/matches` — `{ answers }` → `{ benefits, needsGuardianInput }`
 - `GET /v1/admin/cases/:caseCode` — 행정직원용 사례 정보(주소, 가구·소득, 수급 상태, 추천 근거)를 반환
+- `GET /v1/helper/cases/:caseCode` — 본인이 미답변한 항목만 보호자용으로 반환
+- `PUT /v1/helper/cases/:caseCode/answers` — 보호자가 채운 미답변 항목을 저장
 
 `benefits`의 항목은 `id`, `name`, `tag`, `summary`, `amount`, `reason`, `location`, `needsCheck?`, `supplies`를 반환하면 됩니다.
 

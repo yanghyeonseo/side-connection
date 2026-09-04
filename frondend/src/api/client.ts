@@ -1,6 +1,6 @@
 import { findProgramMatches, loadWelfareCatalog } from '../../welfare-search.js'
 import type { BeneficiaryProfile, ProgramMatch, WelfareCatalog } from '../../welfare-search.js'
-import type { AdminCase, AnswerValue, Benefit, MatchingResponse, Session, UserMode } from '../types'
+import type { AdminCase, AnswerValue, Benefit, HelperCase, MatchingResponse, Session, UserMode } from '../types'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -171,4 +171,20 @@ export async function getAdminCase(caseCode: string): Promise<AdminCase> {
     familySupport: '자녀와 연락 단절 가능성 있음', needs: '생계·주거·돌봄 지원 필요도 확인', identityAndAccount: '신분증·본인 명의 계좌 보유 여부 확인 필요',
     recommendedBenefits: ['주거급여', '기초생활보장 생계급여', '노인맞춤돌봄서비스'], note: '본 정보는 본인 또는 보호자 진술 기반의 사전상담 자료입니다. 소득·재산·부양의무자 기준은 공적 시스템으로 확인이 필요합니다.'
   }
+}
+
+export async function getHelperCase(caseCode: string): Promise<HelperCase> {
+  if (API_BASE_URL) return request<HelperCase>(`/v1/helper/cases/${caseCode}`, { method: 'GET' })
+  return {
+    caseCode,
+    missingFields: [
+      { id: 'income', label: '한 달에 들어오는 돈', description: '연금, 일, 가족 지원을 모두 더한 대략의 금액이에요.', options: ['30만 원 아래', '30~60만 원', '60~100만 원', '100만 원 넘게'] },
+      { id: 'housingDetail', label: '집 계약 정보', description: '전세·월세라면 보증금과 월세를 알려주세요.', input: 'text' },
+      { id: 'publicBenefits', label: '현재 받는 복지급여', description: '정확하지 않아도 괜찮아요.', input: 'text' },
+    ],
+  }
+}
+
+export async function saveHelperAnswers(caseCode: string, answers: Record<string, string>) {
+  if (API_BASE_URL) return request<void>(`/v1/helper/cases/${caseCode}/answers`, { method: 'PUT', body: JSON.stringify({ answers }) })
 }
