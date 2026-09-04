@@ -2,7 +2,7 @@
 
 취약계층 공공지원사업 안내 서비스의 FastAPI 백엔드입니다. 프론트엔드(`frontend/src/api/client.ts`)가 브라우저 안에서 처리하던 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공합니다.
 
-- 데이터는 저장소의 `data/manifest.json`과 `data/departments/*.json`을 기동 시 한 번 읽어 메모리에 올립니다.
+- 데이터는 큐레이션 정적 데이터(`data/`)에 공공데이터포털 실시간 수집분(정부24 공공서비스·복지로 복지서비스)을 합쳐 메모리에 올립니다. 수집분은 `data/cache/`에 캐시되고 24시간마다 백그라운드 갱신됩니다.
 - 로그인·본인인증 없이 세션 코드만으로 동작하고, 답변은 TTL이 지나면 삭제됩니다.
 - 추천 결과는 후보 검색용이며 "확실히 받을 수 있다"는 표현을 쓰지 않습니다. 자격의 최종 확정은 담당기관이 합니다.
 
@@ -35,6 +35,9 @@ uv run uvicorn app.main:app --reload
 | POST | `/api/v1/sessions/{id}/matches` | 답변 → 프로필 변환 → 추천 카드 | `getMatches` |
 | GET | `/api/v1/sessions/{id}/brief` | 주민센터 전달용 안내문 | `brief()` |
 | DELETE | `/api/v1/sessions/{id}` | 세션 삭제 | |
+| GET | `/api/v1/admin/cases/{caseCode}` | 행정 확인 화면: 진술 요약, 추천 검토 사업, AI 상담원 메모 | `getAdminCase` |
+| GET | `/api/v1/helper/cases/{caseCode}` | 보호자가 대신 채울 빈 항목 목록 | `getHelperCase` |
+| PUT | `/api/v1/helper/cases/{caseCode}/answers` | 보호자 답변 저장 (세션 답변에 병합) | `saveHelperAnswers` |
 
 응답 JSON은 프론트엔드 타입(`Benefit`, `MatchingResponse`, `WelfareProgram`)과 같은 camelCase 키를 씁니다.
 
