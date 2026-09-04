@@ -2,14 +2,75 @@ import { findProgramMatches, loadWelfareCatalog } from '../../welfare-search.js'
 import type { BeneficiaryProfile, ProgramMatch, WelfareCatalog } from '../../welfare-search.js'
 import type { AdminCase, AnswerValue, Benefit, HelperCase, MatchingResponse, Session, UserMode } from '../types'
 
+// 백엔드 주소(끝에 /api 포함). 비어 있으면 브라우저 안에서만 동작하는 데모 모드가 된다.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
+
+// 백엔드에 닿지 못한 채 만든 세션. 답변을 기기 밖으로 보내지 않고 내장 엔진으로 추천한다.
+const LOCAL_SESSION_PREFIX = 'local-'
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 async function request<T>(path: string, init: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, { headers: { 'Content-Type': 'application/json' }, ...init })
   if (!response.ok) throw new Error('요청을 처리하지 못했어요.')
+  if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
 }
+
+function isRemoteSession(sessionId: string) {
+  return Boolean(API_BASE_URL) && !sessionId.startsWith(LOCAL_SESSION_PREFIX)
+}
+
+export async function createSession(mode: UserMode): Promise<Session> {
+  if (API_BASE_URL) {
+    try {
+      return await request<Session>('/v1/sessions', { method: 'POST', body: JSON.stringify({ mode }) })
+    } catch {
+      // 서버에 닿지 못해도 어르신 흐름은 끊지 않는다. 아래 로컬 세션으로 이어간다.
+    }
+  }
+  // 로컬 세션에는 사례번호가 없다. 상담원이 조회할 수 없는 가짜 번호를 만들지 않는다.
+  return { sessionId: `${LOCAL_SESSION_PREFIX}${crypto.randomUUID()}`, caseCode: '' }
+}
+
+export async function saveAnswer(sessionId: string, questionId: string, value: AnswerValue) {
+  if (!isRemoteSession(sessionId)) return
+  try {
+    await request<void>(`/v1/sessions/${sessionId}/answers/${encodeURIComponent(questionId)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ value }),
+    })
+  } catch {
+    // 추천 요청에 전체 답변을 다시 보내므로, 중간 저장 실패로 흐름을 막지 않는다.
+  }
+}
+
+export async function getMatches(sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
+  if (isRemoteSession(sessionId)) {
+    return request<MatchingResponse>(`/v1/sessions/${sessionId}/matches`, {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    })
+  }
+  return matchLocally(answers)
+}
+
+export async function getAdminCase(caseCode: string): Promise<AdminCase> {
+  if (!API_BASE_URL) throw new Error('행정 확인 화면은 서버 연결이 필요해요.')
+  return request<AdminCase>(`/v1/admin/cases/${caseCode}`, { method: 'GET' })
+}
+
+export async function getHelperCase(caseCode: string): Promise<HelperCase> {
+  if (!API_BASE_URL) throw new Error('보호자 입력 화면은 서버 연결이 필요해요.')
+  return request<HelperCase>(`/v1/helper/cases/${caseCode}`, { method: 'GET' })
+}
+
+export async function saveHelperAnswers(caseCode: string, answers: Record<string, string>) {
+  if (!API_BASE_URL) throw new Error('보호자 입력 화면은 서버 연결이 필요해요.')
+  return request<void>(`/v1/helper/cases/${caseCode}/answers`, { method: 'PUT', body: JSON.stringify({ answers }) })
+}
+
+// ── 로컬(데모) 매칭: 백엔드 없이도 정적 데이터로 같은 판정을 수행한다 ──
 
 const needCategories: Record<string, string[]> = {
   '생활비가 부담돼요': ['LIVING'],
@@ -130,18 +191,7 @@ function toBenefit(match: ProgramMatch): Benefit {
   }
 }
 
-export async function createSession(mode: UserMode): Promise<Session> {
-  if (API_BASE_URL) return request<Session>('/v1/sessions', { method: 'POST', body: JSON.stringify({ mode }) })
-  return { sessionId: crypto.randomUUID(), caseCode: `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}` }
-}
-
-export async function saveAnswer(sessionId: string, questionId: string, value: AnswerValue) {
-  if (API_BASE_URL) return request<void>(`/v1/sessions/${sessionId}/answers`, { method: 'PUT', body: JSON.stringify({ questionId, value }) })
-  // 답변은 브라우저 메모리에만 유지하고 외부로 전송하지 않습니다.
-}
-
-export async function getMatches(sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
-  if (API_BASE_URL) return request<MatchingResponse>(`/v1/sessions/${sessionId}/matches`, { method: 'POST', body: JSON.stringify({ answers }) })
+async function matchLocally(answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
   const [catalog] = await Promise.all([getCatalog(), delay(500)])
   const profile = answersToProfile(answers)
   let matches = findProgramMatches(catalog.programs, profile, {
@@ -181,30 +231,4 @@ export async function getMatches(sessionId: string, answers: Record<string, Answ
     needsGuardianInput,
     broadened,
   }
-}
-
-export async function getAdminCase(caseCode: string): Promise<AdminCase> {
-  if (API_BASE_URL) return request<AdminCase>(`/v1/admin/cases/${caseCode}`, { method: 'GET' })
-  return {
-    caseCode, createdAt: new Date().toLocaleString('ko-KR'), address: '서울특별시 종로구 (상세 주소는 본인 확인 후 열람)',
-    household: '1인 가구(독거)', incomeBand: '월 소득 추정 30~60만 원', publicBenefits: '기초연금 수급(본인 진술)',
-    familySupport: '자녀와 연락 단절 가능성 있음', needs: '생계·주거·돌봄 지원 필요도 확인', identityAndAccount: '신분증·본인 명의 계좌 보유 여부 확인 필요',
-    recommendedBenefits: ['주거급여', '기초생활보장 생계급여', '노인맞춤돌봄서비스'], note: '본 정보는 본인 또는 보호자 진술 기반의 사전상담 자료입니다. 소득·재산·부양의무자 기준은 공적 시스템으로 확인이 필요합니다.'
-  }
-}
-
-export async function getHelperCase(caseCode: string): Promise<HelperCase> {
-  if (API_BASE_URL) return request<HelperCase>(`/v1/helper/cases/${caseCode}`, { method: 'GET' })
-  return {
-    caseCode,
-    missingFields: [
-      { id: 'income', label: '한 달에 들어오는 돈', description: '연금, 일, 가족 지원을 모두 더한 대략의 금액이에요.', options: ['30만 원 아래', '30~60만 원', '60~100만 원', '100만 원 넘게'] },
-      { id: 'housingDetail', label: '집 계약 정보', description: '전세·월세라면 보증금과 월세를 알려주세요.', input: 'text' },
-      { id: 'publicBenefits', label: '현재 받는 복지급여', description: '정확하지 않아도 괜찮아요.', input: 'text' },
-    ],
-  }
-}
-
-export async function saveHelperAnswers(caseCode: string, answers: Record<string, string>) {
-  if (API_BASE_URL) return request<void>(`/v1/helper/cases/${caseCode}/answers`, { method: 'PUT', body: JSON.stringify({ answers }) })
 }

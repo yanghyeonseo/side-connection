@@ -1,4 +1,4 @@
-"""상황 입력 질문 흐름. `frondend/src/data/questions.ts`와 `App.tsx`의 분기 규칙을 그대로 둔다."""
+"""상황 입력 질문 흐름. `frontend/src/data/questions.ts`와 `App.tsx`의 분기 규칙을 그대로 둔다."""
 
 from app.schemas.question import Question
 from app.schemas.session import AnswerValue

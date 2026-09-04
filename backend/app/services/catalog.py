@@ -1,9 +1,10 @@
 """`data/manifest.json`과 부서별 JSON을 읽어 메모리 카탈로그를 만든다.
 
-`frondend/welfare-search.js`의 `loadWelfareCatalog`와 같은 검증을 수행한다.
+`frontend/welfare-search.js`의 `loadWelfareCatalog`와 같은 검증을 수행한다.
 """
 
 import json
+from itertools import count
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -17,10 +18,13 @@ class CatalogError(RuntimeError):
 
 
 class WelfareCatalog:
+    _versions = count()
+
     def __init__(self, manifest: Manifest, departments: list[Department], programs: list[WelfareProgram]):
         self.manifest = manifest
         self.departments = departments
         self.programs = programs
+        self.version = next(self._versions)  # 캐시 키용. 카탈로그 교체를 구분한다
         self._by_id = {program.id: program for program in programs}
 
     def get(self, program_id: str) -> WelfareProgram | None:

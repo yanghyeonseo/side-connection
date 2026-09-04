@@ -22,6 +22,14 @@ const regions: Record<string, string[]> = {
 }
 const birthYears = Array.from({ length: 107 }, (_, index) => String(2026 - index))
 
+function visibleQuestions(answers: Record<string, AnswerValue>) {
+  return questions.filter((question) => {
+    if (question.id === 'lastContact') return typeof answers.children === 'string' && answers.children !== '없어요' && answers.children !== '네, 연락도 잘 돼요'
+    if (question.id === 'mobility') return Array.isArray(answers.need) && answers.need.includes('식사·혼자 생활')
+    return true
+  })
+}
+
 function Icon({ name }: { name: 'speaker' | 'arrow' | 'check' | 'copy' | 'close' }) {
   const paths = {
     speaker: <><path d="M4 10v4h3l4 4V6l-4 4H4Z"/><path d="M15 9.5a4 4 0 0 1 0 5M17.8 6.8a8 8 0 0 1 0 10.4"/></>,
@@ -52,11 +60,7 @@ export default function App() {
   const [regionDetail, setRegionDetail] = useState('')
   const [linkCopied, setLinkCopied] = useState(false)
 
-  const activeQuestions = useMemo(() => questions.filter((question) => {
-    if (question.id === 'lastContact') return typeof answers.children === 'string' && answers.children !== '없어요' && answers.children !== '네, 연락도 잘 돼요'
-    if (question.id === 'mobility') return Array.isArray(answers.need) && answers.need.includes('식사·혼자 생활')
-    return true
-  }), [answers.children, answers.need])
+  const activeQuestions = useMemo(() => visibleQuestions(answers), [answers])
   const question = activeQuestions[questionIndex]
 
   const begin = async (nextMode: UserMode) => {
@@ -108,13 +112,18 @@ export default function App() {
     if (!question) return
     const finalValue = unknown ? '잘 모르겠어요' : (value ?? draft)
     if (!finalValue || (Array.isArray(finalValue) && finalValue.length === 0)) return
-    const answer = question.id === 'area' ? `${regionCity} ${regionDistrict}` : finalValue
-    const updated: Record<string, AnswerValue> = { ...answers, [question.id]: answer, ...(question.id === 'area' && regionDetail ? { areaDetail: regionDetail } : {}) }
+    // '잘 모르겠어요'는 지역 질문에서도 그대로 남겨야 보호자 보완 대상이 된다.
+    const answer = question.id === 'area' && !unknown ? `${regionCity} ${regionDistrict}` : finalValue
+    const withDetail = question.id === 'area' && !unknown && regionDetail
+    const updated: Record<string, AnswerValue> = { ...answers, [question.id]: answer, ...(withDetail ? { areaDetail: regionDetail } : {}) }
     setAnswers(updated)
     void saveAnswer(sessionId, question.id, answer)
-    if (question.id === 'area' && regionDetail) void saveAnswer(sessionId, 'areaDetail', regionDetail)
-    if (questionIndex + 1 < activeQuestions.length) {
-      setQuestionIndex(questionIndex + 1); setDraft(updated[activeQuestions[questionIndex + 1].id] ?? '')
+    if (withDetail) void saveAnswer(sessionId, 'areaDetail', regionDetail)
+    // 답이 바뀌면 후속 질문 목록도 바뀌므로, 갱신된 답 기준으로 다음 질문을 찾는다.
+    const nextActive = visibleQuestions(updated)
+    const nextIndex = nextActive.findIndex((item) => item.id === question.id) + 1
+    if (nextIndex < nextActive.length) {
+      setQuestionIndex(nextIndex); setDraft(updated[nextActive[nextIndex].id] ?? '')
     } else {
       void findMatches(updated)
     }
@@ -124,6 +133,8 @@ export default function App() {
     const index = questionIndex - 1
     setQuestionIndex(index); setDraft(answers[activeQuestions[index].id] ?? '')
   }
+  // caseCode가 비어 있으면 서버 없이 만든 로컬 세션이다. 사례번호·링크 기능은 숨긴다.
+  const hasCase = caseCode !== ''
   const caseUrl = `${window.location.origin}${import.meta.env.BASE_URL}admin/cases/${caseCode}`
   const helperUrl = `${window.location.origin}${import.meta.env.BASE_URL}helper/cases/${caseCode}`
   const callNumber = (import.meta.env.VITE_WELFARE_CENTER_PHONE ?? '129').replace(/[^0-9]/g, '')
@@ -133,9 +144,11 @@ export default function App() {
 
   const missingCount = Object.values(answers).filter((answer) => answer === '잘 모르겠어요').length
   const shareHelperLink = async () => {
-    const shareData = { title: '곁이음 보호자 보완', text: '어르신이 답하지 못한 항목을 채워 주세요.', url: helperUrl }
-    if (navigator.share) await navigator.share(shareData)
-    else { await navigator.clipboard?.writeText(helperUrl); setLinkCopied(true) }
+    try {
+      if (navigator.share) { await navigator.share({ title: '곁이음 보호자 보완', text: '어르신이 답하지 못한 항목을 채워 주세요.', url: helperUrl }); return }
+      await navigator.clipboard?.writeText(helperUrl)
+      setLinkCopied(true)
+    } catch { /* 공유 취소나 복사 차단은 흐름을 막을 일이 아니다 */ }
   }
 
   if (adminCode) return <AdministrativeCase caseCode={adminCode} />
@@ -181,11 +194,12 @@ export default function App() {
     {screen === 'results' && matches && <section className="results page">
       <p className="eyebrow">도움 찾기 결과</p><h1><em>{matches.benefits.length}가지</em> 도움을<br/>찾아봤어요.</h1>
       {matchError && <div className="result-state"><b>결과를 불러오지 못했어요.</b><span>인터넷 연결을 확인한 뒤 다시 시도해 주세요.</span><button onClick={() => void findMatches(answers)}>다시 찾기</button></div>}
+      {matches.aiSummary && <p className="ai-summary">{matches.aiSummary}</p>}
       {matches.broadened && <div className="soft-alert"><b>넓게 찾아본 결과예요</b><span>정확한 자격은 주민센터에서 한 번 더 확인해 주세요.</span></div>}
       {matches.needsGuardianInput.length > 0 && <div className="soft-alert"><b>조금 더 정확히 찾으려면</b><span>{matches.needsGuardianInput.join(', ')}을 확인해 주세요.</span></div>}
       {!matchError && matches.benefits.length === 0 && <div className="result-state"><b>지금은 딱 맞는 도움을 찾기 어려워요.</b><span>주민센터에서 현재 상황을 한 번 더 확인해 주세요.</span></div>}
       <div className="benefit-list">{matches.benefits.map((benefit) => <button className="benefit-card" key={benefit.id} onClick={() => { setSelectedBenefit(benefit); setScreen('detail') }}><span className="pill">{benefit.tag}</span><h2>{benefit.name}</h2><p>{benefit.summary}</p><Icon name="arrow"/></button>)}</div>
-      {missingCount > 0 && <button className="helper-button" onClick={() => setScreen('helperInvite')}>보호자에게 빈칸 채워달라고 하기 <Icon name="arrow"/></button>}
+      {missingCount > 0 && hasCase && <button className="helper-button" onClick={() => setScreen('helperInvite')}>보호자에게 빈칸 채워달라고 하기 <Icon name="arrow"/></button>}
       <button className="brief-button" onClick={() => setScreen('brief')}>주민센터에 보여줄 안내문 만들기 <Icon name="arrow"/></button>
       <p className="disclaimer">정확한 자격은 주민센터에서 확인해요.</p>
     </section>}
@@ -199,10 +213,11 @@ export default function App() {
     </section>}
 
     {screen === 'brief' && <section className="brief page">
-      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 연결</p><h1>담당자에게<br/>바로 알려주세요.</h1><p className="subcopy">사례번호와 안전한 확인 링크가 함께 전달돼요.</p>
-      <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small></div>
-      <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a><a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a></div>
-      <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
+      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 연결</p><h1>담당자에게<br/>바로 알려주세요.</h1><p className="subcopy">{hasCase ? '사례번호와 안전한 확인 링크가 함께 전달돼요.' : '전화로 상담을 받을 수 있어요.'}</p>
+      {hasCase && <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small></div>}
+      <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a>{smsNumber && hasCase && <a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a>}</div>
+      {hasCase ? <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
+        : <div className="send-note"><b>지금은 사례번호 없이 연결돼요</b><span>서버에 연결되지 않아 번호를 만들지 못했어요. 전화로 상황을 말씀해 주세요.</span></div>}
       <p className="disclaimer">계좌번호는 전송하지 않아요. 실제 수신 번호는 환경설정으로 연결할 수 있어요.</p>
     </section>}
 
@@ -229,9 +244,24 @@ function HelperCompletion({ caseCode }: { caseCode: string }) {
   const [helperCase, setHelperCase] = useState<HelperCase | null>(null)
   const [values, setValues] = useState<Record<string, string>>({})
   const [complete, setComplete] = useState(false)
-  useEffect(() => { getHelperCase(caseCode).then(setHelperCase) }, [caseCode])
+  const [error, setError] = useState(false)
+  useEffect(() => { getHelperCase(caseCode).then(setHelperCase).catch(() => setError(true)) }, [caseCode])
+  if (error) return <main className="admin-page"><h1>사례를 찾을 수 없어요.</h1><p>링크가 만료됐을 수 있어요. 어르신께 새 링크를 부탁해 주세요.</p></main>
   if (!helperCase) return <main className="admin-page"><div className="spinner"/><p>보완할 항목을 불러오는 중이에요.</p></main>
-  const ready = helperCase.missingFields.every((field) => values[field.id]?.trim())
-  const submit = async () => { await saveHelperAnswers(caseCode, values); setComplete(true) }
-  return <main className="helper-page"><header><span>곁이음</span><b>보호자 입력</b></header>{complete ? <section className="helper-done"><div className="warm-mark">✓</div><h1>잘 받았어요.</h1><p>입력한 내용이 어르신 결과에 반영됐어요.</p></section> : <section><p className="eyebrow">어르신 대신 입력하기</p><h1>아는 내용만<br/>채워주세요.</h1><p className="subcopy">정확하지 않아도 괜찮아요. 최종 확인은 주민센터에서 해요.</p><div className="helper-fields">{helperCase.missingFields.map((field) => <label key={field.id}><b>{field.label}</b>{field.description && <small>{field.description}</small>}{field.options ? <div className="helper-options">{field.options.map((option) => <button className={values[field.id] === option ? 'selected' : ''} key={option} onClick={() => setValues({ ...values, [field.id]: option })}>{option}</button>)}</div> : <input type={field.input ?? 'text'} value={values[field.id] ?? ''} onChange={(event) => setValues({ ...values, [field.id]: event.target.value })} />}</label>)}</div><button className="share-button" disabled={!ready} onClick={submit}>입력 완료 <Icon name="arrow"/></button></section>}</main>
+  if (helperCase.missingFields.length === 0 && !complete) return <main className="admin-page"><h1>채울 항목이 없어요.</h1><p>어르신이 모든 질문에 답하셨어요. 고마워요!</p></main>
+  // "아는 내용만" 채워도 제출할 수 있다. 빈 항목은 보내지 않는다.
+  const ready = helperCase.missingFields.some((field) => values[field.id]?.trim())
+  const submit = async () => {
+    const filled = Object.fromEntries(Object.entries(values).filter(([, value]) => value.trim()))
+    try { await saveHelperAnswers(caseCode, filled); setComplete(true) } catch { setError(true) }
+  }
+  const selectOption = (field: { id: string; multiple?: boolean }, option: string) => {
+    if (!field.multiple) { setValues({ ...values, [field.id]: option }); return }
+    const current = (values[field.id] ?? '').split(',').filter(Boolean)
+    const toggled = current.includes(option) ? current.filter((item) => item !== option) : [...current, option]
+    setValues({ ...values, [field.id]: toggled.join(',') })
+  }
+  const isSelected = (field: { id: string; multiple?: boolean }, option: string) =>
+    field.multiple ? (values[field.id] ?? '').split(',').includes(option) : values[field.id] === option
+  return <main className="helper-page"><header><span>곁이음</span><b>보호자 입력</b></header>{complete ? <section className="helper-done"><div className="warm-mark">✓</div><h1>잘 받았어요.</h1><p>입력한 내용이 어르신 결과에 반영됐어요.</p></section> : <section><p className="eyebrow">어르신 대신 입력하기</p><h1>아는 내용만<br/>채워주세요.</h1><p className="subcopy">정확하지 않아도 괜찮아요. 최종 확인은 주민센터에서 해요.</p><div className="helper-fields">{helperCase.missingFields.map((field) => <label key={field.id}><b>{field.label}</b>{field.description && <small>{field.description}</small>}{field.options ? <div className="helper-options">{field.options.map((option) => <button className={isSelected(field, option) ? 'selected' : ''} key={option} onClick={() => selectOption(field, option)}>{option}</button>)}</div> : <input type={field.input ?? 'text'} value={values[field.id] ?? ''} onChange={(event) => setValues({ ...values, [field.id]: event.target.value })} />}</label>)}</div><button className="share-button" disabled={!ready} onClick={submit}>입력 완료 <Icon name="arrow"/></button></section>}</main>
 }

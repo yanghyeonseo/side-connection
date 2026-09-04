@@ -83,7 +83,7 @@ const filterOptions = getFilterOptions(catalog.programs);
 데이터 로드·복합 검색·보수적 판정 테스트는 저장소 루트에서 다음처럼 실행합니다.
 
 ```bash
-node --test frondend/welfare-search.test.mjs
+node --test frontend/welfare-search.test.mjs
 ```
 
 ---

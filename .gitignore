@@ -1,0 +1,13 @@
+# 환경변수·비밀키
+.env
+.env.*
+!.env.example
+
+# OMC 운영 상태
+.omc/
+
+# OS
+.DS_Store
+
+# 데이터 캐시
+data/cache/

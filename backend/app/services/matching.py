@@ -1,4 +1,4 @@
-"""프로필 기반 추천 판정. `frondend/welfare-search.js`의 `evaluateProgram`/`findProgramMatches` 포팅.
+"""프로필 기반 추천 판정. `frontend/welfare-search.js`의 `evaluateProgram`/`findProgramMatches` 포팅.
 
 원칙: 명확한 불일치만 탈락시키고, 정보가 없거나 지자체별로 다른 조건은
 `NEEDS_CONFIRMATION`으로 남긴다. 자격의 최종 확정은 담당기관이 한다.

@@ -31,6 +31,7 @@ export type MatchingResponse = {
   benefits: Benefit[]
   needsGuardianInput: string[]
   broadened?: boolean
+  aiSummary?: string | null
 }
 
 export type Session = {
@@ -58,6 +59,7 @@ export type HelperField = {
   description?: string
   input?: 'text' | 'number'
   options?: string[]
+  multiple?: boolean
 }
 
 export type HelperCase = {

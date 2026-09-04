@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import Depends, HTTPException, Request, status
 
-from app.config import Settings, get_settings
+from app.config import Settings
 from app.services.catalog import WelfareCatalog
 from app.services.sessions import Session, SessionStore
 
@@ -17,7 +17,12 @@ def get_session_store(request: Request) -> SessionStore:
     return request.app.state.sessions
 
 
-SettingsDep = Annotated[Settings, Depends(get_settings)]
+def get_app_settings(request: Request) -> Settings:
+    """`create_app(settings)`로 주입된 설정. 전역 캐시 대신 앱 상태를 본다."""
+    return request.app.state.settings
+
+
+SettingsDep = Annotated[Settings, Depends(get_app_settings)]
 CatalogDep = Annotated[WelfareCatalog, Depends(get_catalog)]
 SessionStoreDep = Annotated[SessionStore, Depends(get_session_store)]
 

@@ -1,7 +1,7 @@
 [project]
-name = "gyeote-backend"
+name = "gyeotieum-backend"
 version = "0.1.0"
-description = "곁에 — 취약계층 공공지원사업 안내 서비스 백엔드 API (데모)"
+description = "곁이음 — 취약계층 공공지원사업 안내 서비스 백엔드 API "
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -9,7 +9,17 @@ dependencies = [
   "uvicorn[standard]>=0.30",
   "pydantic>=2.7",
   "pydantic-settings>=2.3",
+  "httpx>=0.27",
 ]
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
