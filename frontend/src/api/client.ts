@@ -29,10 +29,8 @@ export async function createSession(mode: UserMode): Promise<Session> {
       // 서버에 닿지 못해도 어르신 흐름은 끊지 않는다. 아래 로컬 세션으로 이어간다.
     }
   }
-  return {
-    sessionId: `${LOCAL_SESSION_PREFIX}${crypto.randomUUID()}`,
-    caseCode: `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}`,
-  }
+  // 로컬 세션에는 사례번호가 없다. 상담원이 조회할 수 없는 가짜 번호를 만들지 않는다.
+  return { sessionId: `${LOCAL_SESSION_PREFIX}${crypto.randomUUID()}`, caseCode: '' }
 }
 
 export async function saveAnswer(sessionId: string, questionId: string, value: AnswerValue) {

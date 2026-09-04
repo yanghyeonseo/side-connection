@@ -59,6 +59,7 @@ export type HelperField = {
   description?: string
   input?: 'text' | 'number'
   options?: string[]
+  multiple?: boolean
 }
 
 export type HelperCase = {
