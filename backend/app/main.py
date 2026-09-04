@@ -7,10 +7,9 @@
 
 import logging
 from contextlib import asynccontextmanager
-from datetime import timedelta
-from threading import Thread
+from datetime import datetime, timedelta, timezone
+from threading import Event, Thread
 
-import httpx
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -18,6 +17,7 @@ from app.config import Settings, get_settings
 from app.routers import api_router, health
 from app.services import opendata
 from app.services.catalog import WelfareCatalog, load_catalog
+from app.services.ratelimit import RateLimiter
 from app.services.sessions import SessionStore
 
 logger = logging.getLogger(__name__)
@@ -44,13 +44,29 @@ def _refresh_open_data(app: FastAPI, settings: Settings, base_catalog: WelfareCa
     """공공데이터를 새로 받아 카탈로그를 교체한다. 실패해도 기존 카탈로그로 계속 동작."""
     try:
         programs = opendata.fetch_open_programs(settings)
-    except httpx.HTTPError as exc:
-        logger.warning("공공데이터 수집 실패, 기존 카탈로그 유지: %s", exc)
-        return
-    if programs:
-        opendata.save_cache(settings, programs)
-        app.state.catalog = opendata.merge_catalog(base_catalog, programs)
-        logger.info("카탈로그 갱신: 총 %d개 사업", len(app.state.catalog))
+        if programs:
+            opendata.save_cache(settings, programs)
+            app.state.catalog = opendata.merge_catalog(base_catalog, programs)
+            logger.info("카탈로그 갱신: 총 %d개 사업", len(app.state.catalog))
+    except Exception:
+        # 수집은 최선-노력 작업이다. 어떤 실패도 서버를 멈추게 하지 않는다.
+        logger.exception("공공데이터 수집 실패, 기존 카탈로그 유지")
+
+
+def _open_data_refresh_loop(
+    app: FastAPI, settings: Settings, base_catalog: WelfareCatalog, stop: Event
+) -> None:
+    """캐시가 낡았으면 수집하고, 갱신 주기마다 반복한다."""
+    interval = settings.open_data_refresh_hours * 3600
+    while not stop.is_set():
+        cached = opendata.load_cache(settings)
+        if cached is None or not opendata.is_cache_fresh(cached[1], settings):
+            _refresh_open_data(app, settings, base_catalog)
+            wait = interval
+        else:
+            elapsed = (datetime.now(timezone.utc) - cached[1]).total_seconds()
+            wait = max(60.0, interval - elapsed)
+        stop.wait(wait)
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
@@ -61,22 +77,29 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         app.state.settings = settings
         base_catalog = load_catalog(settings.data_dir)
         app.state.catalog = base_catalog
-        app.state.sessions = SessionStore(ttl=timedelta(minutes=settings.session_ttl_minutes))
+        app.state.sessions = SessionStore(
+            ttl=timedelta(minutes=settings.session_ttl_minutes),
+            max_sessions=settings.max_sessions,
+        )
+        app.state.case_lookup_limiter = RateLimiter(
+            limit=settings.case_lookup_limit,
+            window_seconds=settings.case_lookup_window_seconds,
+        )
 
-        # 캐시가 있으면 즉시 반영하고, 낡았거나 없으면 백그라운드에서 새로 수집한다.
-        cache_fresh = False
+        # 캐시가 있으면 즉시 반영하고, 수집 루프가 낡은 캐시를 주기적으로 갱신한다.
         cached = opendata.load_cache(settings)
         if cached is not None:
-            programs, fetched_at = cached
-            app.state.catalog = opendata.merge_catalog(base_catalog, programs)
-            cache_fresh = opendata.is_cache_fresh(fetched_at, settings)
-        has_key = settings.gov24_service_key or settings.welfare_info_service_key
-        if has_key and not cache_fresh:
+            app.state.catalog = opendata.merge_catalog(base_catalog, cached[0])
+        stop_refresh = Event()
+        if settings.gov24_service_key or settings.welfare_info_service_key:
             Thread(
-                target=_refresh_open_data, args=(app, settings, base_catalog), daemon=True
+                target=_open_data_refresh_loop,
+                args=(app, settings, base_catalog, stop_refresh),
+                daemon=True,
             ).start()
 
         yield
+        stop_refresh.set()
         app.state.sessions.clear()
 
     app = FastAPI(

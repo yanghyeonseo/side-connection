@@ -4,6 +4,7 @@
 """
 
 import json
+from itertools import count
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -17,10 +18,13 @@ class CatalogError(RuntimeError):
 
 
 class WelfareCatalog:
+    _versions = count()
+
     def __init__(self, manifest: Manifest, departments: list[Department], programs: list[WelfareProgram]):
         self.manifest = manifest
         self.departments = departments
         self.programs = programs
+        self.version = next(self._versions)  # 캐시 키용. 카탈로그 교체를 구분한다
         self._by_id = {program.id: program for program in programs}
 
     def get(self, program_id: str) -> WelfareProgram | None:

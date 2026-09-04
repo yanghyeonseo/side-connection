@@ -35,6 +35,7 @@ GOV24_SERVICE_DETAIL = "/gov24/v3/serviceDetail"
 BOKJIRO_SERVICES = "/15083323/v1/uddi:3929b807-3420-44d7-a851-cc741fce65a1"
 
 PAGE_SIZE = 1000
+MAX_PAGES = 50  # totalCount 오보고로 인한 무한 수집 방지
 REQUEST_TIMEOUT = 60.0
 CACHE_FILE = "open-data.json"
 
@@ -80,9 +81,9 @@ FALLBACK_DOCUMENT = "신분증 (자세한 서류는 접수기관 문의)"
 
 
 def _fetch_all(client: httpx.Client, path: str, service_key: str) -> list[dict]:
+    # 인증키는 data.go.kr의 'Decoding' 키를 그대로 쓴다. httpx가 percent 인코딩을 맡는다.
     rows: list[dict] = []
-    page = 1
-    while True:
+    for page in range(1, MAX_PAGES + 1):
         response = client.get(
             f"{ODCLOUD_BASE}{path}",
             params={"page": page, "perPage": PAGE_SIZE, "serviceKey": service_key},
@@ -93,7 +94,8 @@ def _fetch_all(client: httpx.Client, path: str, service_key: str) -> list[dict]:
         rows.extend(data)
         if not data or len(rows) >= int(body.get("totalCount") or 0):
             return rows
-        page += 1
+    logger.warning("%s: %d페이지 상한 도달, 수집을 여기서 멈춥니다", path, MAX_PAGES)
+    return rows
 
 
 def _clean_line(value: object, limit: int) -> str:
@@ -134,12 +136,23 @@ def _coverage(org_type: str, org_name: str) -> list[str]:
     return ["전국-지자체별상이"]
 
 
+def _as_int(value: object) -> int | None:
+    """odcloud는 숫자 필드를 int 또는 "065" 같은 문자열로 준다."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip().isdigit():
+        return int(value.strip())
+    return None
+
+
 def _is_elderly_relevant(service: dict, condition: dict) -> bool:
-    max_age = condition.get("JA0111")
-    if isinstance(max_age, int) and max_age < ELDERLY_AGE:
+    max_age = _as_int(condition.get("JA0111"))
+    if max_age is not None and max_age < ELDERLY_AGE:
         return False
-    min_age = condition.get("JA0110")
-    if isinstance(min_age, int) and min_age >= ELDERLY_MIN_AGE:
+    min_age = _as_int(condition.get("JA0110"))
+    if min_age is not None and min_age >= ELDERLY_MIN_AGE:
         return True
     text = " ".join(str(service.get(key) or "") for key in ("서비스명", "서비스목적요약", "지원대상", "서비스분야"))
     return bool(ELDERLY_KEYWORDS.search(text))
@@ -166,8 +179,8 @@ def _gov24_program(service: dict, condition: dict, detail: dict) -> WelfareProgr
     category, related = _pick_category(str(service.get("서비스분야") or ""), text)
     deadline_raw = _clean_line(service.get("신청기한"), 120)
     is_always_open = "상시" in deadline_raw or not deadline_raw
-    min_age = condition.get("JA0110")
-    max_age = condition.get("JA0111")
+    min_age = _as_int(condition.get("JA0110"))
+    max_age = _as_int(condition.get("JA0111"))
 
     conditions = _split_lines(service.get("선정기준"), max_items=1, limit=120)
     conditions.append("정부24 상세 페이지에서 최신 자격·기간 확인")
@@ -187,8 +200,8 @@ def _gov24_program(service: dict, condition: dict, detail: dict) -> WelfareProgr
             "relatedCategories": related,
             "serviceTypes": _split_lines(service.get("지원유형"), max_items=3, limit=40),
             "eligibility": {
-                "minAge": min_age if isinstance(min_age, int) else None,
-                "maxAge": max_age if isinstance(max_age, int) else None,
+                "minAge": min_age,
+                "maxAge": max_age,
                 "incomeTypes": _income_types(condition),
                 "conditions": conditions,
             },
@@ -294,7 +307,9 @@ def save_cache(settings: Settings, programs: list[WelfareProgram]) -> None:
         "fetchedAt": datetime.now(timezone.utc).isoformat(),
         "programs": [program.model_dump(mode="json", by_alias=True) for program in programs],
     }
-    path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    temp = path.with_suffix(".tmp")
+    temp.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+    temp.replace(path)  # 쓰다 만 파일을 읽지 않도록 원자적으로 교체
 
 
 def load_cache(settings: Settings) -> tuple[list[WelfareProgram], datetime] | None:

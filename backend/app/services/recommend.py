@@ -5,6 +5,9 @@
 현재 접수 가능한 일반 후보라도 제시한다(broadened=True).
 """
 
+from collections import OrderedDict
+from threading import Lock
+
 from app.config import Settings
 from app.schemas.matching import MatchingResponse, SearchFilters
 from app.schemas.profile import BeneficiaryProfile
@@ -14,6 +17,30 @@ from app.services.catalog import WelfareCatalog
 from app.services.matching import find_program_matches
 from app.services.presenter import build_matching_response
 from app.services.profile import answers_to_profile
+
+# 같은 답변으로 다시 찾을 때 AI 호출을 반복하지 않기 위한 캐시.
+_CACHE_LIMIT = 256
+_curated_cache: OrderedDict[tuple, MatchingResponse] = OrderedDict()
+_cache_lock = Lock()
+
+
+def answers_cache_key(answers: dict[str, AnswerValue]) -> tuple:
+    return tuple(sorted((key, tuple(value) if isinstance(value, list) else value) for key, value in answers.items()))
+
+
+def _cache_get(key: tuple) -> MatchingResponse | None:
+    with _cache_lock:
+        cached = _curated_cache.get(key)
+        if cached is not None:
+            _curated_cache.move_to_end(key)
+        return cached.model_copy(deep=True) if cached is not None else None
+
+
+def _cache_put(key: tuple, result: MatchingResponse) -> None:
+    with _cache_lock:
+        _curated_cache[key] = result.model_copy(deep=True)
+        while len(_curated_cache) > _CACHE_LIMIT:
+            _curated_cache.popitem(last=False)
 
 
 def _broadened_profile(profile: BeneficiaryProfile) -> BeneficiaryProfile:
@@ -30,6 +57,10 @@ def recommend_for_answers(
     *,
     curate: bool = False,
 ) -> MatchingResponse:
+    cache_key = ("curated", catalog.version, answers_cache_key(answers)) if curate else None
+    if cache_key is not None and (cached := _cache_get(cache_key)) is not None:
+        return cached
+
     profile = answers_to_profile(answers)
     filters = SearchFilters(only_currently_open=True)
     matches = find_program_matches(
@@ -49,4 +80,6 @@ def recommend_for_answers(
     result.broadened = broadened
     if curate:
         result = ai.curate_matches(settings, answers, result)
+        if cache_key is not None:
+            _cache_put(cache_key, result)
     return result
