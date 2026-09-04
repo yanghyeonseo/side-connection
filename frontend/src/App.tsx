@@ -181,6 +181,7 @@ export default function App() {
     {screen === 'results' && matches && <section className="results page">
       <p className="eyebrow">도움 찾기 결과</p><h1><em>{matches.benefits.length}가지</em> 도움을<br/>찾아봤어요.</h1>
       {matchError && <div className="result-state"><b>결과를 불러오지 못했어요.</b><span>인터넷 연결을 확인한 뒤 다시 시도해 주세요.</span><button onClick={() => void findMatches(answers)}>다시 찾기</button></div>}
+      {matches.aiSummary && <p className="ai-summary">{matches.aiSummary}</p>}
       {matches.broadened && <div className="soft-alert"><b>넓게 찾아본 결과예요</b><span>정확한 자격은 주민센터에서 한 번 더 확인해 주세요.</span></div>}
       {matches.needsGuardianInput.length > 0 && <div className="soft-alert"><b>조금 더 정확히 찾으려면</b><span>{matches.needsGuardianInput.join(', ')}을 확인해 주세요.</span></div>}
       {!matchError && matches.benefits.length === 0 && <div className="result-state"><b>지금은 딱 맞는 도움을 찾기 어려워요.</b><span>주민센터에서 현재 상황을 한 번 더 확인해 주세요.</span></div>}
@@ -229,9 +230,14 @@ function HelperCompletion({ caseCode }: { caseCode: string }) {
   const [helperCase, setHelperCase] = useState<HelperCase | null>(null)
   const [values, setValues] = useState<Record<string, string>>({})
   const [complete, setComplete] = useState(false)
-  useEffect(() => { getHelperCase(caseCode).then(setHelperCase) }, [caseCode])
+  const [error, setError] = useState(false)
+  useEffect(() => { getHelperCase(caseCode).then(setHelperCase).catch(() => setError(true)) }, [caseCode])
+  if (error) return <main className="admin-page"><h1>사례를 찾을 수 없어요.</h1><p>링크가 만료됐을 수 있어요. 어르신께 새 링크를 부탁해 주세요.</p></main>
   if (!helperCase) return <main className="admin-page"><div className="spinner"/><p>보완할 항목을 불러오는 중이에요.</p></main>
+  if (helperCase.missingFields.length === 0 && !complete) return <main className="admin-page"><h1>채울 항목이 없어요.</h1><p>어르신이 모든 질문에 답하셨어요. 고마워요!</p></main>
   const ready = helperCase.missingFields.every((field) => values[field.id]?.trim())
-  const submit = async () => { await saveHelperAnswers(caseCode, values); setComplete(true) }
+  const submit = async () => {
+    try { await saveHelperAnswers(caseCode, values); setComplete(true) } catch { setError(true) }
+  }
   return <main className="helper-page"><header><span>곁이음</span><b>보호자 입력</b></header>{complete ? <section className="helper-done"><div className="warm-mark">✓</div><h1>잘 받았어요.</h1><p>입력한 내용이 어르신 결과에 반영됐어요.</p></section> : <section><p className="eyebrow">어르신 대신 입력하기</p><h1>아는 내용만<br/>채워주세요.</h1><p className="subcopy">정확하지 않아도 괜찮아요. 최종 확인은 주민센터에서 해요.</p><div className="helper-fields">{helperCase.missingFields.map((field) => <label key={field.id}><b>{field.label}</b>{field.description && <small>{field.description}</small>}{field.options ? <div className="helper-options">{field.options.map((option) => <button className={values[field.id] === option ? 'selected' : ''} key={option} onClick={() => setValues({ ...values, [field.id]: option })}>{option}</button>)}</div> : <input type={field.input ?? 'text'} value={values[field.id] ?? ''} onChange={(event) => setValues({ ...values, [field.id]: event.target.value })} />}</label>)}</div><button className="share-button" disabled={!ready} onClick={submit}>입력 완료 <Icon name="arrow"/></button></section>}</main>
 }
