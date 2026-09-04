@@ -16,6 +16,7 @@ def settings(tmp_path: Path) -> Settings:
         welfare_info_service_key=None,
         open_data_cache_dir=tmp_path / "cache",
         data_dir=REPO_ROOT / "data",
+        frontend_dist_dir=tmp_path / "no-dist",
     )
 
 

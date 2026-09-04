@@ -1,4 +1,4 @@
-"""곁에 백엔드 API 진입점.
+"""곁이음 백엔드 API 진입점.
 
 프론트엔드(`frontend/src/api/client.ts`)가 브라우저 안에서 수행하던
 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공한다.
@@ -12,6 +12,8 @@ from threading import Event, Thread
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.config import Settings, get_settings
 from app.routers import api_router, health
@@ -23,7 +25,7 @@ from app.services.sessions import SessionStore
 logger = logging.getLogger(__name__)
 
 DESCRIPTION = """
-취약계층 공공지원사업 안내 서비스 **곁에**의 백엔드 API입니다.
+취약계층 공공지원사업 안내 서비스 **곁이음**의 백엔드 API입니다.
 
 - 로그인·본인인증 없이 세션 코드만으로 동작합니다.
 - 답변은 메모리에만 보관되고 TTL이 지나면 삭제됩니다. 주민등록번호·계좌번호는 받지 않습니다.
@@ -38,6 +40,24 @@ TAGS = [
     {"name": "questions", "description": "상황 입력 질문 흐름"},
     {"name": "sessions", "description": "로그인 없는 세션: 답변 저장, 맞춤 추천, 주민센터 안내문"},
 ]
+
+
+class SpaStaticFiles(StaticFiles):
+    """없는 경로는 index.html로 응답하는 SPA용 정적 서빙. API 경로는 404를 그대로 둔다.
+
+    Starlette 버전에 따라 404가 응답 또는 예외로 오므로 둘 다 처리한다.
+    """
+
+    async def get_response(self, path: str, scope):
+        try:
+            response = await super().get_response(path, scope)
+        except StarletteHTTPException as exc:
+            if exc.status_code == 404 and not path.startswith("api/"):
+                return await super().get_response("index.html", scope)
+            raise
+        if response.status_code == 404 and not path.startswith("api/"):
+            return await super().get_response("index.html", scope)
+        return response
 
 
 def _refresh_open_data(app: FastAPI, settings: Settings, base_catalog: WelfareCatalog) -> None:
@@ -125,9 +145,15 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(health.router)
     app.include_router(api_router, prefix="/api/v1")
 
-    @app.get("/", include_in_schema=False)
-    def root() -> dict[str, str]:
-        return {"name": settings.app_name, "version": settings.version, "docs": "/docs"}
+    # 빌드된 프론트엔드가 있으면 같은 출처에서 함께 서빙한다 (CORS 불필요).
+    # /admin/cases/…, /helper/cases/… 같은 SPA 경로는 index.html로 되돌린다.
+    if (settings.frontend_dist_dir / "index.html").is_file():
+        app.mount("/", SpaStaticFiles(directory=settings.frontend_dist_dir, html=True), name="frontend")
+    else:
+
+        @app.get("/", include_in_schema=False)
+        def root() -> dict[str, str]:
+            return {"name": settings.app_name, "version": settings.version, "docs": "/docs"}
 
     return app
 

@@ -1,7 +1,7 @@
 """환경변수 기반 설정.
 
-`GYEOTE_` 접두사를 붙인 환경변수나 `.env` 파일로 덮어쓸 수 있다.
-예) GYEOTE_SESSION_TTL_MINUTES=60
+`GYEOTIEUM_` 접두사를 붙인 환경변수나 `.env` 파일로 덮어쓸 수 있다.
+예) GYEOTIEUM_SESSION_TTL_MINUTES=60
 
 외부 서비스 키(OPENAI_KEY, GOV24_SERVICE_KEY 등)는 저장소 루트 `.env`에
 접두사 없이 두고 validation_alias로 읽는다.
@@ -18,18 +18,22 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="GYEOTE_",
+        env_prefix="GYEOTIEUM_",
         env_file=(REPO_ROOT / ".env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
 
-    app_name: str = "곁에 API"
+    app_name: str = "곁이음 API"
     version: str = "0.1.0"
 
     data_dir: Path = Field(
         default=REPO_ROOT / "data",
         description="manifest.json과 departments/*.json이 있는 디렉터리",
+    )
+    frontend_dist_dir: Path = Field(
+        default=REPO_ROOT / "frontend" / "dist",
+        description="빌드된 프론트엔드. index.html이 있으면 백엔드가 함께 서빙한다",
     )
     cors_origins: list[str] = Field(
         default=[
