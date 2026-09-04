@@ -40,6 +40,11 @@ jobs:
           VITE_API_BASE_URL: https://gyeote-api.hs-yang.com/api
           VITE_WELFARE_CENTER_PHONE: "129"
 
+      - name: Add SPA fallback
+        working-directory: frontend
+        # Pages는 정적 서버라 /admin/cases/..., /helper/cases/... 새로고침이 404가 된다.
+        run: cp dist/index.html dist/404.html
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
