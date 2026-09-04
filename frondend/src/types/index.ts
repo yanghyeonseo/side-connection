@@ -30,6 +30,7 @@ export type Benefit = {
 export type MatchingResponse = {
   benefits: Benefit[]
   needsGuardianInput: string[]
+  broadened?: boolean
 }
 
 export type Session = {

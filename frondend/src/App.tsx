@@ -181,6 +181,7 @@ export default function App() {
     {screen === 'results' && matches && <section className="results page">
       <p className="eyebrow">도움 찾기 결과</p><h1><em>{matches.benefits.length}가지</em> 도움을<br/>찾아봤어요.</h1>
       {matchError && <div className="result-state"><b>결과를 불러오지 못했어요.</b><span>인터넷 연결을 확인한 뒤 다시 시도해 주세요.</span><button onClick={() => void findMatches(answers)}>다시 찾기</button></div>}
+      {matches.broadened && <div className="soft-alert"><b>넓게 찾아본 결과예요</b><span>정확한 자격은 주민센터에서 한 번 더 확인해 주세요.</span></div>}
       {matches.needsGuardianInput.length > 0 && <div className="soft-alert"><b>조금 더 정확히 찾으려면</b><span>{matches.needsGuardianInput.join(', ')}을 확인해 주세요.</span></div>}
       {!matchError && matches.benefits.length === 0 && <div className="result-state"><b>지금은 딱 맞는 도움을 찾기 어려워요.</b><span>주민센터에서 현재 상황을 한 번 더 확인해 주세요.</span></div>}
       <div className="benefit-list">{matches.benefits.map((benefit) => <button className="benefit-card" key={benefit.id} onClick={() => { setSelectedBenefit(benefit); setScreen('detail') }}><span className="pill">{benefit.tag}</span><h2>{benefit.name}</h2><p>{benefit.summary}</p><Icon name="arrow"/></button>)}</div>

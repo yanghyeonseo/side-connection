@@ -144,11 +144,30 @@ export async function getMatches(sessionId: string, answers: Record<string, Answ
   if (API_BASE_URL) return request<MatchingResponse>(`/v1/sessions/${sessionId}/matches`, { method: 'POST', body: JSON.stringify({ answers }) })
   const [catalog] = await Promise.all([getCatalog(), delay(500)])
   const profile = answersToProfile(answers)
-  const matches = findProgramMatches(catalog.programs, profile, {
+  let matches = findProgramMatches(catalog.programs, profile, {
     filters: { onlyCurrentlyOpen: true },
     includeNotEligible: false,
     limit: 12,
   })
+  let broadened = false
+
+  // 정확한 자격을 아직 판단할 수 없다고 해서 결과를 0건으로 끝내지 않는다.
+  // 연령·지역·소득은 주민센터에서 최종 확인하도록 남기고, 현재 접수 가능한 일반 후보를 제시한다.
+  if (matches.length === 0) {
+    broadened = true
+    matches = findProgramMatches(catalog.programs, {
+      ...profile,
+      age: undefined,
+      region: undefined,
+      livingAlone: undefined,
+      needs: [],
+      tags: [],
+    }, {
+      filters: { onlyCurrentlyOpen: true },
+      includeNotEligible: false,
+      limit: 12,
+    })
+  }
 
   const needsGuardianInput = [...new Set(
     matches
@@ -160,6 +179,7 @@ export async function getMatches(sessionId: string, answers: Record<string, Answ
   return {
     benefits: matches.map(toBenefit),
     needsGuardianInput,
+    broadened,
   }
 }
 
