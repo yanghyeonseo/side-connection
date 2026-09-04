@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response, status
 
 from app.dependencies import CatalogDep, SessionDep, SessionStoreDep, SettingsDep
-from app.schemas.matching import MatchingResponse, SearchFilters
+from app.schemas.matching import MatchingResponse
 from app.schemas.question import Question
 from app.schemas.session import (
     AnswerIn,
@@ -12,18 +12,20 @@ from app.schemas.session import (
     SessionView,
 )
 from app.services.brief import build_brief
-from app.services.matching import find_program_matches
-from app.services.presenter import build_matching_response
-from app.services.profile import answers_to_profile
 from app.services.questions import QUESTION_IDS, active_questions, guardian_follow_up
+from app.services.recommend import recommend_for_answers
 from app.services.sessions import Session
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
+
+# 질문 흐름에는 없지만 함께 저장하는 보조 항목 (상세 주소, 집 계약 정보)
+EXTRA_ANSWER_IDS = frozenset({"areaDetail", "housingDetail"})
 
 
 def _view(session: Session) -> SessionView:
     return SessionView(
         session_id=session.id,
+        case_code=session.case_code,
         mode=session.mode,
         helper_type=session.helper_type,
         answers=session.answers,
@@ -33,23 +35,16 @@ def _view(session: Session) -> SessionView:
     )
 
 
-def _match_session(session: Session, catalog, settings) -> MatchingResponse:
-    profile = answers_to_profile(session.answers)
-    matches = find_program_matches(
-        catalog.programs,
-        profile,
-        filters=SearchFilters(only_currently_open=True),
-        include_not_eligible=False,
-        limit=settings.match_limit,
-    )
-    return build_matching_response(matches)
-
-
 @router.post("", response_model=SessionCreated, status_code=status.HTTP_201_CREATED, summary="세션 생성")
 def create_session(body: SessionCreate, store: SessionStoreDep) -> SessionCreated:
     """프론트엔드 `createSession(mode)`. 로그인 없이 세션 코드만 발급한다."""
     session = store.create(mode=body.mode, helper_type=body.helper_type)
-    return SessionCreated(session_id=session.id, mode=session.mode, expires_at=session.expires_at)
+    return SessionCreated(
+        session_id=session.id,
+        case_code=session.case_code,
+        mode=session.mode,
+        expires_at=session.expires_at,
+    )
 
 
 @router.get("/{session_id}", response_model=SessionView, summary="세션 조회")
@@ -66,7 +61,7 @@ def session_questions(session: SessionDep) -> list[Question]:
 @router.put("/{session_id}/answers/{question_id}", response_model=SessionView, summary="답변 저장")
 def save_answer(question_id: str, body: AnswerIn, session: SessionDep, store: SessionStoreDep) -> SessionView:
     """프론트엔드 `saveAnswer(sessionId, questionId, value)`. 같은 질문을 다시 보내면 덮어쓴다."""
-    if question_id not in QUESTION_IDS:
+    if question_id not in QUESTION_IDS and question_id not in EXTRA_ANSWER_IDS:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"알 수 없는 질문입니다: {question_id}")
     updated = store.set_answer(session.id, question_id, body.value)
     if updated is None:
@@ -82,16 +77,19 @@ def match_session(
     settings: SettingsDep,
     body: SessionMatchRequest | None = None,
 ) -> MatchingResponse:
-    """프론트엔드 `getMatches(sessionId, answers)`. 답변을 프로필로 변환해 추천 카드를 만든다."""
+    """프론트엔드 `getMatches(sessionId, answers)`. 답변을 프로필로 변환해 추천 카드를 만든다.
+
+    결과가 없으면 조건을 넓혀 다시 찾고(broadened), AI가 어르신 눈높이 문구로 다듬는다.
+    """
     if body is not None and body.answers:
         session = store.merge_answers(session.id, body.answers) or session
-    return _match_session(session, catalog, settings)
+    return recommend_for_answers(session.answers, catalog, settings, curate=True)
 
 
 @router.get("/{session_id}/brief", response_model=BriefResponse, summary="주민센터 전달 안내문")
 def session_brief(session: SessionDep, catalog: CatalogDep, settings: SettingsDep) -> BriefResponse:
     """방문 시 화면으로 보여주거나 보호자에게 공유할 안내문. 계좌번호는 담지 않는다."""
-    result = _match_session(session, catalog, settings)
+    result = recommend_for_answers(session.answers, catalog, settings)
     return BriefResponse(text=build_brief(session.answers, result.benefits, result.needs_guardian_input))
 
 

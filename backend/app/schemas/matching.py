@@ -129,3 +129,5 @@ class MatchingResponse(CamelModel):
 
     benefits: list[Benefit]
     needs_guardian_input: list[str] = Field(description="보호자가 보완하면 정확해지는 항목 라벨")
+    broadened: bool = Field(default=False, description="조건을 넓혀 다시 찾은 결과인지")
+    ai_summary: str | None = Field(default=None, description="AI가 쓴 어르신 눈높이 안내 문단")

@@ -2,6 +2,9 @@
 
 `GYEOTE_` 접두사를 붙인 환경변수나 `.env` 파일로 덮어쓸 수 있다.
 예) GYEOTE_SESSION_TTL_MINUTES=60
+
+외부 서비스 키(OPENAI_KEY, GOV24_SERVICE_KEY 등)는 저장소 루트 `.env`에
+접두사 없이 두고 validation_alias로 읽는다.
 """
 
 from functools import lru_cache
@@ -16,7 +19,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="GYEOTE_",
-        env_file=".env",
+        env_file=(REPO_ROOT / ".env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -46,6 +49,53 @@ class Settings(BaseSettings):
         ge=1,
         le=100,
         description="세션 맞춤 추천에서 반환할 최대 사업 수",
+    )
+
+    openai_key: str | None = Field(
+        default=None,
+        validation_alias="OPENAI_KEY",
+        description="OpenAI API 키. 없으면 AI 큐레이션 없이 규칙 기반 문구로 동작",
+    )
+    openai_model: str = Field(
+        default="gpt-5-mini",
+        validation_alias="OPENAI_MODEL",
+        description="추천 큐레이션·상담원 안내문 생성에 쓸 모델",
+    )
+    openai_timeout_seconds: float = Field(
+        default=20.0,
+        gt=0,
+        description="AI 호출 제한 시간. 초과하면 규칙 기반 문구로 대체",
+    )
+
+    gov24_service_key: str | None = Field(
+        default=None,
+        validation_alias="GOV24_SERVICE_KEY",
+        description="[행정안전부] 대한민국 공공서비스(혜택) 정보 인증키",
+    )
+    welfare_info_service_key: str | None = Field(
+        default=None,
+        validation_alias="WELFARE_INFO_SERVICE_KEY",
+        description="[한국사회보장정보원] 복지서비스정보 인증키",
+    )
+    open_data_cache_dir: Path = Field(
+        default=REPO_ROOT / "data" / "cache",
+        description="공공데이터 수집 결과를 저장할 디렉터리 (gitignore 대상)",
+    )
+    open_data_refresh_hours: int = Field(
+        default=24,
+        ge=1,
+        description="캐시가 이보다 오래되면 백그라운드에서 다시 수집",
+    )
+
+    welfare_center_phone: str = Field(
+        default="129",
+        validation_alias="WELFARE_CENTER_PHONE",
+        description="전화 상담 번호. 기본 129(보건복지상담센터)",
+    )
+    welfare_center_sms: str | None = Field(
+        default=None,
+        validation_alias="WELFARE_CENTER_SMS_NUMBER",
+        description="문자 수신 번호. 없으면 문자 안내 생략",
     )
 
 
