@@ -34,8 +34,7 @@ cd frontend && node welfare-search.test.mjs
 
 ## 환경변수 (git 미추적)
 
-서버 비밀키는 저장소 루트 `.env`(예시: `.env.example`), 프론트 빌드 변수는 `frontend/.env`(예시: `frontend/.env.example`)로
-분리되어 있습니다. 빌드는 루트 `.env`를 읽지 않으므로 비밀키가 번들에 섞일 수 없습니다.
+서버 비밀키는 저장소 루트 `.env`(예시: `.env.example`), 프론트 빌드 변수는 `frontend/.env`(예시: `frontend/.env.example`)로 분리되어 있습니다. 빌드는 루트 `.env`를 읽지 않으므로 비밀키가 번들에 섞일 수 없습니다.
 
 | 키 (루트 `.env`) | 설명 |
 |---|---|
@@ -53,15 +52,5 @@ cd frontend && node welfare-search.test.mjs
 
 ## 배포
 
-- **프론트엔드**: `https://gyeotieum.hs-yang.com` — GitHub Pages 커스텀 도메인 (`main` 푸시 시 자동 배포).
-  홈서버가 꺼져도 화면은 항상 뜨고, 백엔드에 닿지 못하면 브라우저 내 데모 모드로 폴백한다
-- **백엔드**: `https://gyeotieum-api.hs-yang.com` — 홈서버 `~/projects/side-connection`에서
-  systemd 유저 서비스 `gyeotieum`로 상시 실행. 빌드된 프론트도 함께 서빙하므로 풀스택 미러 역할도 한다
-
-  ```bash
-  ssh yhs
-  systemctl --user status gyeotieum     # 상태 확인
-  cd ~/projects/side-connection && git pull && systemctl --user restart gyeotieum   # 배포
-  ```
-
-- **도메인**: `gyeotieum.hs-yang.com`은 Cloudflare DNS(CNAME → yanghyeonseo.github.io, DNS only), `gyeotieum-api.hs-yang.com`은 Cloudflare Tunnel(`hs-yang`) ingress → `localhost:8000` (`/etc/cloudflared/config.yml`)
+- **프론트엔드**: `https://gyeotieum.hs-yang.com` — GitHub Pages 커스텀 도메인으로 `main` 푸시 시 자동 배포됩니다. 백엔드에 닿지 못하면 브라우저 내 데모 모드로 폴백하므로 화면은 항상 동작합니다.
+- **백엔드**: `https://gyeotieum-api.hs-yang.com` — 소유자의 홈서버에서 systemd 서비스로 상시 실행되며, Cloudflare Tunnel로 공개됩니다. 빌드된 프론트도 함께 서빙하므로 풀스택 미러 역할도 합니다.
