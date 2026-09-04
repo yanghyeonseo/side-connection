@@ -1,8 +1,8 @@
 import type { Question } from '../types'
 
 export const questions: Question[] = [
-  { id: 'birthYear', title: '몇 년에 태어나셨어요?', description: '정확히 기억나지 않으면 대략 알려주세요.', input: 'number' },
-  { id: 'area', title: '지금 어디에 살고 계세요?', description: '시·군·구까지만 알려주셔도 돼요.', input: 'text' },
+  { id: 'birthYear', title: '몇 년에 태어나셨어요?', description: '아래에서 출생 연도를 골라 주세요.', control: 'year' },
+  { id: 'area', title: '지금 어디에 살고 계세요?', description: '사는 시·군·구를 눌러 주세요.', control: 'region' },
   { id: 'household', title: '지금 집에 누구와 살고 계세요?', options: ['혼자 살아요', '배우자와 살아요', '자녀·손주와 살아요', '다른 사람과 살아요'] },
   { id: 'children', title: '아드님·따님이 계세요?', options: ['네, 연락도 잘 돼요', '있는데 연락이 잘 안 돼요', '있는데 아예 끊겼어요', '없어요'] },
   { id: 'lastContact', title: '마지막으로 연락한 게 언제쯤이에요?', options: ['1년 안', '1~3년', '3년 넘게', '기억 안 나요'], followUp: (answer) => typeof answer === 'string' && answer.includes('연락') },

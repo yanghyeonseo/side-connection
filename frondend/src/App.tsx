@@ -1,11 +1,26 @@
-import { useMemo, useState } from 'react'
-import { createSession, getMatches, saveAnswer } from './api/client'
+import { useEffect, useMemo, useState } from 'react'
+import { createSession, getAdminCase, getMatches, saveAnswer } from './api/client'
 import { questions } from './data/questions'
-import type { AnswerValue, Benefit, MatchingResponse, UserMode } from './types'
+import type { AdminCase, AnswerValue, Benefit, MatchingResponse, UserMode } from './types'
 
 type Screen = 'start' | 'helperType' | 'question' | 'loading' | 'results' | 'detail' | 'brief'
 
 const helperTypes = ['자녀·가족', '요양보호사·활동지원사', '복지사·공무원', '이웃·지인']
+const regions: Record<string, string[]> = {
+  '서울특별시': ['종로구', '중구', '용산구', '성동구', '광진구', '마포구', '강남구', '송파구'],
+  '부산광역시': ['중구', '서구', '동구', '부산진구', '해운대구', '사하구'],
+  '대구광역시': ['중구', '동구', '서구', '남구', '수성구', '달서구'],
+  '인천광역시': ['중구', '동구', '미추홀구', '연수구', '부평구', '서구'],
+  '광주광역시': ['동구', '서구', '남구', '북구', '광산구'],
+  '대전광역시': ['동구', '중구', '서구', '유성구', '대덕구'],
+  '울산광역시': ['중구', '남구', '동구', '북구', '울주군'],
+  '세종특별자치시': ['세종시'], '경기도': ['수원시', '성남시', '고양시', '용인시', '부천시', '화성시'],
+  '강원특별자치도': ['춘천시', '원주시', '강릉시'], '충청북도': ['청주시', '충주시', '제천시'],
+  '충청남도': ['천안시', '공주시', '아산시'], '전북특별자치도': ['전주시', '군산시', '익산시'],
+  '전라남도': ['목포시', '여수시', '순천시'], '경상북도': ['포항시', '경주시', '구미시'],
+  '경상남도': ['창원시', '진주시', '김해시'], '제주특별자치도': ['제주시', '서귀포시']
+}
+const birthYears = Array.from({ length: 107 }, (_, index) => String(2026 - index))
 
 function Icon({ name }: { name: 'speaker' | 'arrow' | 'check' | 'copy' | 'close' }) {
   const paths = {
@@ -16,17 +31,23 @@ function Icon({ name }: { name: 'speaker' | 'arrow' | 'check' | 'copy' | 'close'
 }
 
 export default function App() {
+  const appBasePath = import.meta.env.BASE_URL.replace(/\/$/, '')
+  const appPath = window.location.pathname.startsWith(appBasePath) ? window.location.pathname.slice(appBasePath.length) : window.location.pathname
+  const adminCode = appPath.match(/^\/admin\/cases\/(\d{6,12})\/?$/)?.[1]
   const [screen, setScreen] = useState<Screen>('start')
   const [mode, setMode] = useState<UserMode>('self')
   const [helperType, setHelperType] = useState('')
   const [largeText, setLargeText] = useState(false)
   const [sessionId, setSessionId] = useState('')
+  const [caseCode, setCaseCode] = useState('')
   const [answers, setAnswers] = useState<Record<string, AnswerValue>>({})
   const [questionIndex, setQuestionIndex] = useState(0)
   const [matches, setMatches] = useState<MatchingResponse | null>(null)
   const [selectedBenefit, setSelectedBenefit] = useState<Benefit | null>(null)
   const [draft, setDraft] = useState<AnswerValue>('')
-  const [copied, setCopied] = useState(false)
+  const [regionCity, setRegionCity] = useState('')
+  const [regionDistrict, setRegionDistrict] = useState('')
+  const [regionDetail, setRegionDetail] = useState('')
 
   const activeQuestions = useMemo(() => questions.filter((question) => {
     if (question.id === 'lastContact') return typeof answers.children === 'string' && answers.children !== '없어요' && answers.children !== '네, 연락도 잘 돼요'
@@ -39,15 +60,27 @@ export default function App() {
     setMode(nextMode)
     if (nextMode === 'helper') { setScreen('helperType'); return }
     const session = await createSession(nextMode)
-    setSessionId(session.sessionId); setScreen('question')
+    setSessionId(session.sessionId); setCaseCode(session.caseCode); setScreen('question')
   }
   const beginHelper = async (type: string) => {
     setHelperType(type)
     const session = await createSession('helper')
-    setSessionId(session.sessionId); setScreen('question')
+    setSessionId(session.sessionId); setCaseCode(session.caseCode); setScreen('question')
   }
   const readQuestion = () => {
-    if ('speechSynthesis' in window && question) window.speechSynthesis.speak(new SpeechSynthesisUtterance(question.title))
+    if (!('speechSynthesis' in window) || !question) return
+    const speak = () => {
+      window.speechSynthesis.cancel()
+      const utterance = new SpeechSynthesisUtterance(`${question.title}. ${question.description ?? ''}`)
+      utterance.lang = 'ko-KR'
+      utterance.rate = 0.82
+      utterance.pitch = 1
+      const koreanVoice = window.speechSynthesis.getVoices().find((voice) => voice.lang.toLowerCase().startsWith('ko'))
+      if (koreanVoice) utterance.voice = koreanVoice
+      window.speechSynthesis.speak(utterance)
+    }
+    if (window.speechSynthesis.getVoices().some((voice) => voice.lang.toLowerCase().startsWith('ko'))) speak()
+    else window.speechSynthesis.onvoiceschanged = speak
   }
   const select = (value: string) => {
     if (!question) return
@@ -60,9 +93,11 @@ export default function App() {
     if (!question) return
     const finalValue = unknown ? '잘 모르겠어요' : (value ?? draft)
     if (!finalValue || (Array.isArray(finalValue) && finalValue.length === 0)) return
-    const updated = { ...answers, [question.id]: finalValue }
+    const answer = question.id === 'area' ? `${regionCity} ${regionDistrict}` : finalValue
+    const updated: Record<string, AnswerValue> = { ...answers, [question.id]: answer, ...(question.id === 'area' && regionDetail ? { areaDetail: regionDetail } : {}) }
     setAnswers(updated)
-    void saveAnswer(sessionId, question.id, finalValue)
+    void saveAnswer(sessionId, question.id, answer)
+    if (question.id === 'area' && regionDetail) void saveAnswer(sessionId, 'areaDetail', regionDetail)
     if (questionIndex + 1 < activeQuestions.length) {
       setQuestionIndex(questionIndex + 1); setDraft(updated[activeQuestions[questionIndex + 1].id] ?? '')
     } else {
@@ -75,11 +110,13 @@ export default function App() {
     const index = questionIndex - 1
     setQuestionIndex(index); setDraft(answers[activeQuestions[index].id] ?? '')
   }
-  const brief = () => {
-    const child = answers.children === '있는데 아예 끊겼어요' ? '자녀와 연락이 끊긴 상태입니다.' : ''
-    return `[곁에 서비스 신청 안내]\n\n안녕하세요. ${answers.area ?? '거주지'}에 사시는 어르신입니다.\n${answers.household ?? ''}\n${child}\n\n다음 지원을 상담받고 싶습니다.\n${matches?.benefits.map((benefit, index) => `${index + 1}. ${benefit.name}`).join('\n') ?? ''}\n\n준비물과 자격을 확인 부탁드립니다.\n정확한 자격은 주민센터에서 확인이 필요합니다.`
-  }
-  const copyBrief = async () => { await navigator.clipboard?.writeText(brief()); setCopied(true) }
+  const caseUrl = `${window.location.origin}${import.meta.env.BASE_URL}admin/cases/${caseCode}`
+  const callNumber = (import.meta.env.VITE_WELFARE_CENTER_PHONE ?? '129').replace(/[^0-9]/g, '')
+  const smsNumber = (import.meta.env.VITE_WELFARE_CENTER_SMS_NUMBER ?? '').replace(/[^0-9]/g, '')
+  const smsBody = `복지 지원 상담 요청입니다.\n사례번호: ${caseCode}\n행정 확인 화면: ${caseUrl}`
+  const smsHref = `sms:${smsNumber}?body=${encodeURIComponent(smsBody)}`
+
+  if (adminCode) return <AdministrativeCase caseCode={adminCode} />
 
   return <main className={largeText ? 'app large' : 'app'}>
     <header className="topbar">
@@ -93,8 +130,8 @@ export default function App() {
       <h1>내 상황에 맞는<br/>도움을 찾아드려요.</h1>
       <p className="subcopy">질문은 10개쯤이에요.<br/>모르는 건 넘어가도 괜찮아요.</p>
       <div className="choice-stack">
-        <button className="mode-card primary" onClick={() => begin('self')}><span>제가 직접 알아볼게요</span><small>내 상황을 천천히 알려드릴게요</small><Icon name="arrow"/></button>
-        <button className="mode-card" onClick={() => begin('helper')}><span>어르신을 도와드리려고 해요</span><small>어르신 상황을 대신 입력할게요</small><Icon name="arrow"/></button>
+        <button className="mode-card primary" onClick={() => begin('self')}><span>어르신 본인이에요</span><Icon name="arrow"/></button>
+        <button className="mode-card" onClick={() => begin('helper')}><span>어르신 보호자예요</span><Icon name="arrow"/></button>
       </div>
       <p className="notice">로그인 없이 이용할 수 있어요.</p>
     </section>}
@@ -109,7 +146,7 @@ export default function App() {
       <div className="progress-label"><button className="back" onClick={previous}>‹ 이전</button><span>{questionIndex + 1} / {activeQuestions.length}</span></div>
       <div className="progress"><i style={{ width: `${((questionIndex + 1) / activeQuestions.length) * 100}%` }} /></div>
       <div className="question-head"><p className="eyebrow">상황 알아보기</p><h1>{question.title}</h1>{question.description && <p>{question.description}</p>}<button className="listen" onClick={readQuestion}><Icon name="speaker"/> 읽어드릴게요</button></div>
-      {question.options ? <div className="answer-options">{question.options.map((option) => {
+      {question.control === 'year' ? <div className="year-dial"><label htmlFor="birthYear">출생 연도</label><select id="birthYear" value={typeof draft === 'string' ? draft : ''} onChange={(event) => setDraft(event.target.value)}><option value="">연도를 선택해 주세요</option>{birthYears.map((year) => <option value={year} key={year}>{year}년</option>)}</select><p>휴대폰에서는 다이얼을 돌리듯 고를 수 있어요.</p></div> : question.control === 'region' ? <div className="region-picker"><div><label>시·도</label><div className="region-chips">{Object.keys(regions).map((city) => <button className={regionCity === city ? 'selected' : ''} key={city} onClick={() => { setRegionCity(city); setRegionDistrict(''); setDraft('') }}>{city.replace(/특별자치|특별|광역/g, '')}</button>)}</div></div>{regionCity && <div><label>시·군·구</label><div className="region-chips">{regions[regionCity].map((district) => <button className={regionDistrict === district ? 'selected' : ''} key={district} onClick={() => { setRegionDistrict(district); setDraft(`${regionCity} ${district}`) }}>{district}</button>)}</div></div>}{regionDistrict && <label className="detail-address">상세 주소 <small>선택</small><input placeholder="예: ○○동, ○○아파트" value={regionDetail} onChange={(event) => setRegionDetail(event.target.value)} /></label>}</div> : question.options ? <div className="answer-options">{question.options.map((option) => {
         const selected = Array.isArray(draft) ? draft.includes(option) : draft === option
         return <button className={selected ? 'selected' : ''} key={option} onClick={() => select(option)}>{selected && <Icon name="check"/>}{option}</button>
       })}</div> : <input className="answer-input" autoFocus type={question.input ?? 'text'} inputMode={question.input === 'number' ? 'numeric' : 'text'} placeholder={question.input === 'number' ? '예: 1945' : '예: 서울시 종로구'} value={typeof draft === 'string' ? draft : ''} onChange={(event) => setDraft(event.target.value)} />}
@@ -135,10 +172,21 @@ export default function App() {
     </section>}
 
     {screen === 'brief' && <section className="brief page">
-      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 전달용</p><h1>이 화면을<br/>보여주세요.</h1><p className="subcopy">말로 설명하기 어려울 때 도움이 돼요.</p>
-      <article className="letter">{brief().split('\n').map((line, index) => <p key={index}>{line || ' '}</p>)}</article>
-      <button className="copy-button" onClick={copyBrief}><Icon name="copy"/>{copied ? '복사했어요' : '안내문 복사하기'}</button>
-      <p className="disclaimer">계좌번호는 화면에 담지 않아요.</p>
+      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 연결</p><h1>담당자에게<br/>바로 알려주세요.</h1><p className="subcopy">사례번호와 안전한 확인 링크가 함께 전달돼요.</p>
+      <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small></div>
+      <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a><a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a></div>
+      <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
+      <p className="disclaimer">계좌번호는 전송하지 않아요. 실제 수신 번호는 환경설정으로 연결할 수 있어요.</p>
     </section>}
   </main>
+}
+
+function AdministrativeCase({ caseCode }: { caseCode: string }) {
+  const [caseInfo, setCaseInfo] = useState<AdminCase | null>(null)
+  const [error, setError] = useState(false)
+  useEffect(() => { getAdminCase(caseCode).then(setCaseInfo).catch(() => setError(true)) }, [caseCode])
+  if (error) return <main className="admin-page"><h1>사례를 찾을 수 없어요.</h1><p>사례번호를 다시 확인해 주세요.</p></main>
+  if (!caseInfo) return <main className="admin-page"><div className="spinner"/><p>사례 정보를 불러오는 중이에요.</p></main>
+  const fields = [['거주지', caseInfo.address], ['가구 구성', caseInfo.household], ['소득 구간', caseInfo.incomeBand], ['공적 급여 수급', caseInfo.publicBenefits], ['부양·가족 관계', caseInfo.familySupport], ['주요 욕구', caseInfo.needs], ['신청 준비 상태', caseInfo.identityAndAccount]]
+  return <main className="admin-page"><header><span>곁에 · 행정 확인용</span><b>사례 {caseInfo.caseCode}</b></header><section><p className="eyebrow">사전상담 정보</p><h1>복지 지원 상담 사례</h1><p className="admin-time">등록 시각 {caseInfo.createdAt}</p><dl>{fields.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><div className="admin-benefits"><b>추천 검토 사업</b>{caseInfo.recommendedBenefits.map((benefit) => <span key={benefit}>{benefit}</span>)}</div><div className="admin-note"><b>판정 유의사항</b><p>{caseInfo.note}</p></div></section></main>
 }

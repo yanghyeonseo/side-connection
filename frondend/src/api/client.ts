@@ -1,8 +1,15 @@
 import { findProgramMatches, loadWelfareCatalog } from '../../welfare-search.js'
 import type { BeneficiaryProfile, ProgramMatch, WelfareCatalog } from '../../welfare-search.js'
-import type { AnswerValue, Benefit, MatchingResponse, UserMode } from '../types'
+import type { AdminCase, AnswerValue, Benefit, MatchingResponse, Session, UserMode } from '../types'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+async function request<T>(path: string, init: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, { headers: { 'Content-Type': 'application/json' }, ...init })
+  if (!response.ok) throw new Error('요청을 처리하지 못했어요.')
+  return response.json() as Promise<T>
+}
 
 const needCategories: Record<string, string[]> = {
   '생활비가 부담돼요': ['LIVING'],
@@ -123,15 +130,18 @@ function toBenefit(match: ProgramMatch): Benefit {
   }
 }
 
-export async function createSession(_mode: UserMode) {
-  return { sessionId: crypto.randomUUID() }
+export async function createSession(mode: UserMode): Promise<Session> {
+  if (API_BASE_URL) return request<Session>('/v1/sessions', { method: 'POST', body: JSON.stringify({ mode }) })
+  return { sessionId: crypto.randomUUID(), caseCode: `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}` }
 }
 
-export async function saveAnswer(_sessionId: string, _questionId: string, _value: AnswerValue) {
+export async function saveAnswer(sessionId: string, questionId: string, value: AnswerValue) {
+  if (API_BASE_URL) return request<void>(`/v1/sessions/${sessionId}/answers`, { method: 'PUT', body: JSON.stringify({ questionId, value }) })
   // 답변은 브라우저 메모리에만 유지하고 외부로 전송하지 않습니다.
 }
 
-export async function getMatches(_sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
+export async function getMatches(sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
+  if (API_BASE_URL) return request<MatchingResponse>(`/v1/sessions/${sessionId}/matches`, { method: 'POST', body: JSON.stringify({ answers }) })
   const [catalog] = await Promise.all([getCatalog(), delay(500)])
   const profile = answersToProfile(answers)
   const matches = findProgramMatches(catalog.programs, profile, {
@@ -150,5 +160,15 @@ export async function getMatches(_sessionId: string, answers: Record<string, Ans
   return {
     benefits: matches.map(toBenefit),
     needsGuardianInput,
+  }
+}
+
+export async function getAdminCase(caseCode: string): Promise<AdminCase> {
+  if (API_BASE_URL) return request<AdminCase>(`/v1/admin/cases/${caseCode}`, { method: 'GET' })
+  return {
+    caseCode, createdAt: new Date().toLocaleString('ko-KR'), address: '서울특별시 종로구 (상세 주소는 본인 확인 후 열람)',
+    household: '1인 가구(독거)', incomeBand: '월 소득 추정 30~60만 원', publicBenefits: '기초연금 수급(본인 진술)',
+    familySupport: '자녀와 연락 단절 가능성 있음', needs: '생계·주거·돌봄 지원 필요도 확인', identityAndAccount: '신분증·본인 명의 계좌 보유 여부 확인 필요',
+    recommendedBenefits: ['주거급여', '기초생활보장 생계급여', '노인맞춤돌봄서비스'], note: '본 정보는 본인 또는 보호자 진술 기반의 사전상담 자료입니다. 소득·재산·부양의무자 기준은 공적 시스템으로 확인이 필요합니다.'
   }
 }

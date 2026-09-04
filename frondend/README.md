@@ -106,3 +106,14 @@ npm run dev
 3. 배포 주소는 `https://yanghyeonseo.github.io/side-connection/`입니다.
 
 Pages 빌드는 `/side-connection/` base path를 사용하며 정적 복지 데이터도 빌드 결과에 함께 포함합니다.
+
+## 백엔드 연결
+
+- `POST /v1/sessions` — `{ mode }` → `{ sessionId, caseCode }` (`caseCode`는 숫자로만 구성)
+- `PUT /v1/sessions/:sessionId/answers` — `{ questionId, value }`
+- `POST /v1/sessions/:sessionId/matches` — `{ answers }` → `{ benefits, needsGuardianInput }`
+- `GET /v1/admin/cases/:caseCode` — 행정직원용 사례 정보(주소, 가구·소득, 수급 상태, 추천 근거)를 반환
+
+`benefits`의 항목은 `id`, `name`, `tag`, `summary`, `amount`, `reason`, `location`, `needsCheck?`, `supplies`를 반환하면 됩니다.
+
+전화·문자 수신처는 `VITE_WELFARE_CENTER_PHONE`, `VITE_WELFARE_CENTER_SMS_NUMBER`로 설정합니다. 메시지는 `/admin/cases/:caseCode` 링크를 열며, 사례번호는 유추하기 어려운 숫자로 발급하고 서버에서 만료·접근 통제를 적용해야 합니다.

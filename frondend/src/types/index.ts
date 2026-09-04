@@ -8,6 +8,7 @@ export type Question = {
   options?: string[]
   multiple?: boolean
   input?: 'text' | 'number'
+  control?: 'year' | 'region'
   followUp?: (answer: AnswerValue) => boolean
 }
 
@@ -29,4 +30,23 @@ export type Benefit = {
 export type MatchingResponse = {
   benefits: Benefit[]
   needsGuardianInput: string[]
+}
+
+export type Session = {
+  sessionId: string
+  caseCode: string
+}
+
+export type AdminCase = {
+  caseCode: string
+  createdAt: string
+  address: string
+  household: string
+  incomeBand: string
+  publicBenefits: string
+  familySupport: string
+  needs: string
+  identityAndAccount: string
+  recommendedBenefits: string[]
+  note: string
 }
