@@ -1,0 +1,15 @@
+[project]
+name = "gyeote-backend"
+version = "0.1.0"
+description = "곁에 — 취약계층 공공지원사업 안내 서비스 백엔드 API (데모)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+]
+
+[tool.uv]
+package = false
