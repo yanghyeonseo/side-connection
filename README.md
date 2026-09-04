@@ -34,7 +34,7 @@ cd frontend && node welfare-search.test.mjs
 
 ## 환경변수 (git 미추적)
 
-서버 비밀키는 저장소 루트 `.env`, 프론트 빌드 변수는 `frontend/.env`(예시: `frontend/.env.example`)로
+서버 비밀키는 저장소 루트 `.env`(예시: `.env.example`), 프론트 빌드 변수는 `frontend/.env`(예시: `frontend/.env.example`)로
 분리되어 있습니다. 빌드는 루트 `.env`를 읽지 않으므로 비밀키가 번들에 섞일 수 없습니다.
 
 | 키 (루트 `.env`) | 설명 |
