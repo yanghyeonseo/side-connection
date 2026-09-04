@@ -3,9 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=20 <25"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:pages": "tsc -b && vite build --base=/side-connection/",
     "preview": "vite preview"
   },
   "dependencies": {

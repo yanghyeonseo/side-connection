@@ -21,6 +21,9 @@ export type Benefit = {
   location: string
   needsCheck?: string
   supplies: string[]
+  contact?: string
+  sourceUrl?: string
+  eligibilityStatus?: 'LIKELY' | 'NEEDS_CONFIRMATION' | 'NOT_ELIGIBLE'
 }
 
 export type MatchingResponse = {

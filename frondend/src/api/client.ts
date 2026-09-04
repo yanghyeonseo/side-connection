@@ -1,43 +1,154 @@
+import { findProgramMatches, loadWelfareCatalog } from '../../welfare-search.js'
+import type { BeneficiaryProfile, ProgramMatch, WelfareCatalog } from '../../welfare-search.js'
 import type { AnswerValue, Benefit, MatchingResponse, UserMode } from '../types'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, '')
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const exampleBenefits: Benefit[] = [
-  {
-    id: 'housing', name: '주거급여', tag: '신청해볼 수 있어요', summary: '집세 부담을 덜어주는 지원이에요.', amount: '매달 집세 일부 지원',
-    reason: '소득이 많지 않고 전세·월세에 사신다고 하셔서요.', location: '사시는 곳 동 주민센터', needsCheck: '보증금과 월세를 확인해요.', supplies: ['신분증', '통장 사본', '임대차계약서']
-  },
-  {
-    id: 'basic', name: '기초생활보장 생계급여', tag: '확인이 필요해요', summary: '생활비를 보태주는 지원이에요.', amount: '가구 상황에 따라 달라져요',
-    reason: '혼자 사시고 수입이 많지 않다고 하셔서요.', location: '사시는 곳 동 주민센터', needsCheck: '자녀분의 부양 여부를 함께 확인해요.', supplies: ['신분증', '통장 사본']
-  },
-  {
-    id: 'care', name: '노인맞춤돌봄서비스', tag: '신청해볼 수 있어요', summary: '안부 확인과 생활 도움을 받을 수 있어요.', amount: '안부 확인·일상 도움',
-    reason: '혼자 생활하는 데 어려움이 있다고 하셔서요.', location: '동 주민센터 또는 노인복지관', supplies: ['신분증']
+const needCategories: Record<string, string[]> = {
+  '생활비가 부담돼요': ['LIVING'],
+  '병원비가 걱정돼요': ['MEDICAL'],
+  '식사·혼자 생활': ['MEAL', 'CARE'],
+  '외출·이동': ['MOBILITY'],
+  '집 문제': ['HOUSING'],
+  '혼자 있을 때 안전': ['SAFETY'],
+}
+
+const categoryLabels: Record<string, string> = {
+  CARE: '일상 돌봄',
+  HOUSING: '주거',
+  LIVING: '생활비',
+  MEAL: '식사',
+  MEDICAL: '의료',
+  MOBILITY: '이동',
+  SAFETY: '안전',
+}
+
+let catalogPromise: Promise<WelfareCatalog> | undefined
+
+function getCatalog() {
+  catalogPromise ??= loadWelfareCatalog(`${import.meta.env.BASE_URL}manifest.json`)
+  return catalogPromise
+}
+
+function stringAnswer(answers: Record<string, AnswerValue>, key: string) {
+  const value = answers[key]
+  return typeof value === 'string' && value !== '잘 모르겠어요' ? value : undefined
+}
+
+function listAnswer(answers: Record<string, AnswerValue>, key: string) {
+  const value = answers[key]
+  return Array.isArray(value) ? value.filter((item) => item !== '잘 모르겠어요') : []
+}
+
+function answersToProfile(answers: Record<string, AnswerValue>): BeneficiaryProfile {
+  const currentYear = new Date().getFullYear()
+  const birthYear = Number(stringAnswer(answers, 'birthYear'))
+  const household = stringAnswer(answers, 'household')
+  const receiving = listAnswer(answers, 'receiving')
+  const needs = listAnswer(answers, 'need')
+  const mobility = stringAnswer(answers, 'mobility')
+  const housing = stringAnswer(answers, 'housing')
+  const visit = stringAnswer(answers, 'visit')
+  const children = stringAnswer(answers, 'children')
+
+  const categories = [...new Set(needs.flatMap((need) => needCategories[need] ?? []))]
+  const incomeTypes: string[] = []
+  const tags: string[] = []
+
+  if (receiving.includes('기초연금')) incomeTypes.push('BASIC_PENSION_RECIPIENT')
+  if (receiving.includes('생계비 지원')) incomeTypes.push('BASIC_LIVELIHOOD_ANY')
+  if (receiving.includes('병원비 지원')) incomeTypes.push('MEDICAL_AID_RECIPIENT')
+  if (receiving.includes('집세 지원')) incomeTypes.push('BASIC_LIVELIHOOD_ANY')
+
+  if (household === '혼자 살아요') tags.push('LIVING_ALONE', 'SOCIAL_ISOLATION')
+  if (children?.includes('끊겼어요') || children?.includes('없어요')) tags.push('FAMILY_SUPPORT_ABSENT')
+  if (needs.includes('식사·혼자 생활')) tags.push('MEAL_PREP_DIFFICULTY', 'DAILY_LIVING_DIFFICULTY')
+  if (needs.includes('외출·이동') || visit === '못 가요') tags.push('MOBILITY_DIFFICULTY')
+  if (needs.includes('병원비가 걱정돼요')) tags.push('MEDICAL_EXPENSE_BURDEN')
+  if (needs.includes('혼자 있을 때 안전')) tags.push('EMERGENCY_SAFETY_RISK')
+  if (housing === '제 집이에요') tags.push('HOME_OWNER')
+  if (housing === '전세·월세예요') tags.push('RENT_BURDEN')
+  if (housing === '자녀·친척 집이에요') tags.push('HOUSING_INSTABILITY')
+
+  const assistanceNeed = mobility === '못 해요'
+    ? ['HIGH']
+    : mobility === '힘들지만 해요'
+      ? ['MEDIUM']
+      : ['LOW']
+
+  return {
+    age: Number.isInteger(birthYear) && birthYear > 1900 && birthYear <= currentYear
+      ? currentYear - birthYear
+      : undefined,
+    region: stringAnswer(answers, 'area'),
+    livingAlone: household ? household === '혼자 살아요' : undefined,
+    basicLivelihoodRecipient: receiving.includes('생계비 지원'),
+    medicalAidRecipient: receiving.includes('병원비 지원'),
+    basicPensionRecipient: receiving.includes('기초연금'),
+    incomeInformationComplete: false,
+    incomeTypes,
+    needs: categories,
+    assistanceNeed,
+    tags,
   }
-]
-
-async function request<T>(path: string, init: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { headers: { 'Content-Type': 'application/json' }, ...init })
-  if (!response.ok) throw new Error('요청을 처리하지 못했어요.')
-  return response.json() as Promise<T>
 }
 
-export async function createSession(mode: UserMode) {
-  if (!API_BASE_URL) return { sessionId: crypto.randomUUID() }
-  return request<{ sessionId: string }>('/v1/sessions', { method: 'POST', body: JSON.stringify({ mode }) })
+function matchReason(match: ProgramMatch) {
+  const needs = match.matchedNeeds.map((item) => categoryLabels[item] ?? item)
+  if (needs.length > 0) return `말씀하신 ${needs.join('·')} 도움이 이 사업의 지원내용과 맞을 수 있어요.`
+  const matched = match.conditions.find((item) => item.status === 'MATCHED' && item.key !== 'region')
+  return matched?.detail ?? '입력하신 상황에서 신청 가능성을 확인해 볼 만한 사업이에요.'
 }
 
-export async function saveAnswer(sessionId: string, questionId: string, value: AnswerValue) {
-  if (!API_BASE_URL) return
-  return request<void>(`/v1/sessions/${sessionId}/answers`, { method: 'PUT', body: JSON.stringify({ questionId, value }) })
+function toBenefit(match: ProgramMatch): Benefit {
+  const unknown = match.conditions.filter((item) => item.status === 'UNKNOWN')
+  const needsCheck = [
+    ...unknown.map((item) => item.detail),
+    ...match.confirmationItems.slice(0, 2),
+  ].filter(Boolean)
+
+  return {
+    id: match.program.id,
+    name: match.program.name,
+    tag: match.status === 'LIKELY' ? '신청해볼 수 있어요' : '확인이 필요해요',
+    summary: match.program.summary,
+    amount: match.program.benefits.join(' · '),
+    reason: matchReason(match),
+    location: `${match.program.application.organization} · ${match.program.application.method}`,
+    needsCheck: needsCheck.length > 0 ? needsCheck.join(' / ') : undefined,
+    supplies: match.program.requiredDocuments,
+    contact: match.program.application.contact,
+    sourceUrl: match.program.source.url,
+    eligibilityStatus: match.status,
+  }
 }
 
-export async function getMatches(sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
-  if (API_BASE_URL) return request<MatchingResponse>(`/v1/sessions/${sessionId}/matches`, { method: 'POST', body: JSON.stringify({ answers }) })
-  await delay(700)
-  const benefits = [...exampleBenefits]
-  if (answers.housing !== '전세·월세예요') benefits.shift()
-  return { benefits, needsGuardianInput: answers.children?.toString().includes('끊겼어요') ? ['자녀분과 연락이 끊긴 기간'] : ['정확한 월 소득'] }
+export async function createSession(_mode: UserMode) {
+  return { sessionId: crypto.randomUUID() }
+}
+
+export async function saveAnswer(_sessionId: string, _questionId: string, _value: AnswerValue) {
+  // 답변은 브라우저 메모리에만 유지하고 외부로 전송하지 않습니다.
+}
+
+export async function getMatches(_sessionId: string, answers: Record<string, AnswerValue>): Promise<MatchingResponse> {
+  const [catalog] = await Promise.all([getCatalog(), delay(500)])
+  const profile = answersToProfile(answers)
+  const matches = findProgramMatches(catalog.programs, profile, {
+    filters: { onlyCurrentlyOpen: true },
+    includeNotEligible: false,
+    limit: 12,
+  })
+
+  const needsGuardianInput = [...new Set(
+    matches
+      .flatMap((match) => match.conditions)
+      .filter((item) => item.status === 'UNKNOWN')
+      .map((item) => item.label),
+  )].slice(0, 3)
+
+  return {
+    benefits: matches.map(toBenefit),
+    needsGuardianInput,
+  }
 }

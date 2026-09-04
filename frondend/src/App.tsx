@@ -128,9 +128,10 @@ export default function App() {
 
     {screen === 'detail' && selectedBenefit && <section className="detail page">
       <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><span className="pill">{selectedBenefit.tag}</span><h1>{selectedBenefit.name}</h1><p className="detail-summary">{selectedBenefit.summary}</p>
-      <dl><div><dt>어떤 도움인가요?</dt><dd>{selectedBenefit.amount}</dd></div><div><dt>왜 해당할 수 있나요?</dt><dd>{selectedBenefit.reason}</dd></div><div><dt>어디로 가면 되나요?</dt><dd>{selectedBenefit.location}</dd></div></dl>
+      <dl><div><dt>어떤 도움인가요?</dt><dd>{selectedBenefit.amount}</dd></div><div><dt>왜 해당할 수 있나요?</dt><dd>{selectedBenefit.reason}</dd></div><div><dt>어디로 가면 되나요?</dt><dd>{selectedBenefit.location}</dd></div>{selectedBenefit.contact && <div><dt>문의</dt><dd>{selectedBenefit.contact}</dd></div>}</dl>
       <div className="supplies"><h2>가져갈 것</h2>{selectedBenefit.supplies.map((supply) => <p key={supply}><span>✓</span>{supply}</p>)}</div>
       {selectedBenefit.needsCheck && <div className="soft-alert"><b>주민센터에서 확인해요</b><span>{selectedBenefit.needsCheck}</span></div>}
+      {selectedBenefit.sourceUrl && <a className="source-link" href={selectedBenefit.sourceUrl} target="_blank" rel="noreferrer">공식 안내 확인하기 ↗</a>}
     </section>}
 
     {screen === 'brief' && <section className="brief page">
