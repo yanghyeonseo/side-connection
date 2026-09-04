@@ -53,8 +53,10 @@ cd frontend && node welfare-search.test.mjs
 
 ## 배포
 
-- **프론트엔드**: GitHub Pages (`main` 푸시 시 자동). 빌드 시 `VITE_API_BASE_URL`이 홈서버 API를 가리킴
-- **백엔드**: 홈서버 `~/projects/side-connection`에서 systemd 유저 서비스 `gyeotieum`로 상시 실행
+- **프론트엔드**: `https://gyeotieum.hs-yang.com` — GitHub Pages 커스텀 도메인 (`main` 푸시 시 자동 배포).
+  홈서버가 꺼져도 화면은 항상 뜨고, 백엔드에 닿지 못하면 브라우저 내 데모 모드로 폴백한다
+- **백엔드**: `https://gyeotieum-api.hs-yang.com` — 홈서버 `~/projects/side-connection`에서
+  systemd 유저 서비스 `gyeotieum`로 상시 실행. 빌드된 프론트도 함께 서빙하므로 풀스택 미러 역할도 한다
 
   ```bash
   ssh yhs
@@ -62,4 +64,4 @@ cd frontend && node welfare-search.test.mjs
   cd ~/projects/side-connection && git pull && systemctl --user restart gyeotieum   # 배포
   ```
 
-- **도메인**: Cloudflare Tunnel(`hs-yang`)의 ingress에 `gyeotieum.hs-yang.com → localhost:8000`을 추가해 공개 (`/etc/cloudflared/config.yml`)
+- **도메인**: `gyeotieum.hs-yang.com`은 Cloudflare DNS(CNAME → yanghyeonseo.github.io, DNS only), `gyeotieum-api.hs-yang.com`은 Cloudflare Tunnel(`hs-yang`) ingress → `localhost:8000` (`/etc/cloudflared/config.yml`)

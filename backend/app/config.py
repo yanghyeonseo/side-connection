@@ -40,6 +40,7 @@ class Settings(BaseSettings):
             "http://localhost:5173",
             "http://127.0.0.1:5173",
             "https://yanghyeonseo.github.io",
+            "https://gyeotieum.hs-yang.com",
         ],
         description="브라우저에서 API를 호출할 수 있는 출처",
     )
