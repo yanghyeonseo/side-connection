@@ -205,7 +205,7 @@ export default function App() {
     </section>}
 
     {screen === 'detail' && selectedBenefit && <section className="detail page">
-      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><span className="pill">{selectedBenefit.tag}</span><h1>{selectedBenefit.name}</h1><p className="detail-summary">{selectedBenefit.summary}</p>
+      <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><h1>{selectedBenefit.name}</h1><p className="detail-summary">{selectedBenefit.summary}</p>
       <dl><div><dt>어떤 도움인가요?</dt><dd>{selectedBenefit.amount}</dd></div><div><dt>왜 해당할 수 있나요?</dt><dd>{selectedBenefit.reason}</dd></div><div><dt>어디로 가면 되나요?</dt><dd>{selectedBenefit.location}</dd></div>{selectedBenefit.contact && <div><dt>문의</dt><dd>{selectedBenefit.contact}</dd></div>}</dl>
       <div className="supplies"><h2>가져갈 것</h2>{selectedBenefit.supplies.map((supply) => <p key={supply}><span>✓</span>{supply}</p>)}</div>
       {selectedBenefit.needsCheck && <div className="soft-alert"><b>주민센터에서 확인해요</b><span>{selectedBenefit.needsCheck}</span></div>}
@@ -214,7 +214,7 @@ export default function App() {
 
     {screen === 'brief' && <section className="brief page">
       <button className="back" onClick={() => setScreen('results')}>‹ 결과로</button><p className="eyebrow">주민센터 연결</p><h1>담당자에게<br/>바로 알려주세요.</h1><p className="subcopy">{hasCase ? '사례번호와 안전한 확인 링크가 함께 전달돼요.' : '전화로 상담을 받을 수 있어요.'}</p>
-      {hasCase && <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small></div>}
+      {hasCase && <div className="case-code"><span>상담 사례번호</span><strong>{caseCode}</strong><small>전화할 때 이 번호를 말씀해 주세요.</small><a className="case-link" href={caseUrl} target="_blank" rel="noreferrer">{caseUrl}</a></div>}
       <div className="contact-actions"><a className="contact-button call" href={`tel:${callNumber}`}>주민센터에 전화하기 <Icon name="arrow"/></a>{smsNumber && hasCase && <a className="contact-button message" href={smsHref}>담당자에게 메시지 보내기 <Icon name="arrow"/></a>}</div>
       {hasCase ? <div className="send-note"><b>행정 확인용 정보가 링크에 담겨요</b><span>주소, 가구·소득 구간, 수급 여부와 추천 근거를 전문 용어로 확인할 수 있어요.</span></div>
         : <div className="send-note"><b>지금은 사례번호 없이 연결돼요</b><span>서버에 연결되지 않아 번호를 만들지 못했어요. 전화로 상황을 말씀해 주세요.</span></div>}
