@@ -37,7 +37,7 @@ jobs:
         run: npm run build:pages
         env:
           # 홈서버(cloudflared 터널)로 공개된 백엔드. 끝의 /api까지 포함한다.
-          VITE_API_BASE_URL: https://gyeote-api.hs-yang.com/api
+          VITE_API_BASE_URL: https://gyeotieum.hs-yang.com/api
           VITE_WELFARE_CENTER_PHONE: "129"
 
       - name: Add SPA fallback

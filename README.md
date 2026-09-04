@@ -43,7 +43,7 @@ cd frontend && node welfare-search.test.mjs
 | `GOV24_SERVICE_KEY` | [행정안전부] 대한민국 공공서비스(혜택) 정보 인증키 |
 | `WELFARE_INFO_SERVICE_KEY` | [한국사회보장정보원] 복지서비스정보 인증키 |
 | `WELFARE_CENTER_PHONE` / `WELFARE_CENTER_SMS_NUMBER` | 상담 전화·문자 번호 (기본 129) |
-| `GYEOTE_OPEN_DATA_AUTO_REFRESH` | `false`면 주기 갱신 없이 기동 시 캐시가 낡았을 때만 1회 수집 |
+| `GYEOTIEUM_OPEN_DATA_AUTO_REFRESH` | `false`면 주기 갱신 없이 기동 시 캐시가 낡았을 때만 1회 수집 |
 
 | 키 (`frontend/.env`) | 설명 |
 |---|---|
@@ -54,12 +54,12 @@ cd frontend && node welfare-search.test.mjs
 ## 배포
 
 - **프론트엔드**: GitHub Pages (`main` 푸시 시 자동). 빌드 시 `VITE_API_BASE_URL`이 홈서버 API를 가리킴
-- **백엔드**: 홈서버 `~/projects/side-connection`에서 systemd 유저 서비스 `gyeote-api`로 상시 실행
+- **백엔드**: 홈서버 `~/projects/side-connection`에서 systemd 유저 서비스 `gyeotieum`로 상시 실행
 
   ```bash
   ssh yhs
-  systemctl --user status gyeote-api     # 상태 확인
-  cd ~/projects/side-connection && git pull && systemctl --user restart gyeote-api   # 배포
+  systemctl --user status gyeotieum     # 상태 확인
+  cd ~/projects/side-connection && git pull && systemctl --user restart gyeotieum   # 배포
   ```
 
-- **도메인**: Cloudflare Tunnel(`hs-yang`)의 ingress에 `gyeote-api.hs-yang.com → localhost:8000`을 추가해 공개 (`/etc/cloudflared/config.yml`)
+- **도메인**: Cloudflare Tunnel(`hs-yang`)의 ingress에 `gyeotieum.hs-yang.com → localhost:8000`을 추가해 공개 (`/etc/cloudflared/config.yml`)

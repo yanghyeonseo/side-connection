@@ -7,7 +7,7 @@ from app.schemas.matching import Benefit
 from app.schemas.session import AnswerValue
 from app.services.profile import string_answer
 
-TITLE = "[곁에 서비스 신청 안내]"
+TITLE = "[곁이음 서비스 신청 안내]"
 
 
 def build_brief(

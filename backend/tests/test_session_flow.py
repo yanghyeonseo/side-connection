@@ -47,7 +47,7 @@ def test_full_flow_returns_matches_and_brief(client):
 
     response = client.get(f"/api/v1/sessions/{sid}/brief")
     assert response.status_code == 200
-    assert "곁에" in response.json()["text"]
+    assert "곁이음" in response.json()["text"]
 
 
 def test_unknown_answers_still_produce_results(client):

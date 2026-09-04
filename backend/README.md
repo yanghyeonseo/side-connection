@@ -1,4 +1,4 @@
-# 곁에 — 백엔드 API
+# 곁이음 — 백엔드 API
 
 취약계층 공공지원사업 안내 서비스의 FastAPI 백엔드입니다. 프론트엔드(`frontend/src/api/client.ts`)가 브라우저 안에서 처리하던 세션 생성 → 답변 저장 → 사업 매칭 → 안내문 생성 흐름을 HTTP API로 제공합니다.
 
@@ -15,7 +15,7 @@ uv run uvicorn app.main:app --reload
 ```
 
 - Swagger UI: http://localhost:8000/docs
-- 설정은 `.env.example`을 `.env`로 복사해 바꿉니다. 모든 값은 `GYEOTE_` 접두사를 씁니다.
+- 설정은 `.env.example`을 `.env`로 복사해 바꿉니다. 모든 값은 `GYEOTIEUM_` 접두사를 씁니다.
 
 ## 엔드포인트
 
@@ -65,7 +65,7 @@ curl localhost:8000/api/v1/sessions/$SID/brief
 ```
 app/
 ├── main.py            앱 팩토리, CORS, 라우터 등록, 기동 시 데이터 적재
-├── config.py          환경변수 설정 (GYEOTE_*)
+├── config.py          환경변수 설정 (GYEOTIEUM_*)
 ├── dependencies.py    카탈로그·세션 저장소·세션 조회 의존성
 ├── schemas/           Pydantic 모델. data/ JSON과 프론트엔드 타입에 맞춘 camelCase
 ├── services/
